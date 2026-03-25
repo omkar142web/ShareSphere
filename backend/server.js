@@ -92,6 +92,34 @@ app.post('/api/rides', (req, res) => {
   }
 });
 
+// Rides: Delete
+app.delete('/api/rides/:id', (req, res) => {
+  const token = req.headers.authorization?.split(' ')[1];
+  if (!token) return res.status(401).json({ error: 'Unauthorized' });
+  
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    const driver_id = decoded.id;
+    const ride_id = req.params.id;
+    
+    db.get(`SELECT driver_id FROM rides WHERE id = ?`, [ride_id], (err, ride) => {
+      if (err || !ride) return res.status(404).json({ error: 'Ride not found' });
+      if (ride.driver_id !== driver_id) return res.status(403).json({ error: 'Forbidden: You can only delete your own rides' });
+      
+      db.run(`DELETE FROM bookings WHERE ride_id = ?`, [ride_id], (err) => {
+        if (err) return res.status(500).json({ error: 'Database error' });
+        
+        db.run(`DELETE FROM rides WHERE id = ?`, [ride_id], (err) => {
+          if (err) return res.status(500).json({ error: 'Database error' });
+          res.json({ message: 'Ride deleted successfully' });
+        });
+      });
+    });
+  } catch (error) {
+    res.status(401).json({ error: 'Invalid token' });
+  }
+});
+
 // Rides: Join
 app.post('/api/rides/:id/join', (req, res) => {
   const token = req.headers.authorization?.split(' ')[1];

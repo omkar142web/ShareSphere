@@ -46,6 +46,27 @@ export default function Dashboard() {
     setTimeout(() => { setError(''); setMessage(''); }, 4000);
   };
 
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this ride?")) return;
+    
+    try {
+      const res = await fetch(`http://localhost:5000/api/rides/${id}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setMessage(data.message);
+        fetchRides();
+      } else {
+        setError(data.error);
+      }
+    } catch (err) {
+      setError('Failed to delete ride');
+    }
+    setTimeout(() => { setError(''); setMessage(''); }, 4000);
+  };
+
   if (loading) return <div className="container text-center mt-8 text-secondary">Loading rides...</div>;
 
   return (
@@ -76,7 +97,13 @@ export default function Dashboard() {
 
               <div style={{ marginTop: 'auto', paddingTop: '16px' }}>
                 {user.name === ride.driver_name ? (
-                  <button className="btn btn-outline btn-full" disabled style={{ opacity: 0.5, cursor: 'not-allowed' }}>Your Ride</button>
+                  <button 
+                    onClick={() => handleDelete(ride.id)}
+                    className="btn btn-outline btn-full" 
+                    style={{ borderColor: 'var(--danger)', color: 'var(--danger)' }}
+                  >
+                    Delete Ride
+                  </button>
                 ) : (
                   <button 
                     onClick={() => handleJoin(ride.id)} 
