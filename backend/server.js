@@ -51,14 +51,24 @@ app.post('/api/auth/login', (req, res) => {
 
 // Rides: Get all available
 app.get('/api/rides', (req, res) => {
+  const token = req.headers.authorization?.split(' ')[1];
+  let passenger_id = null;
+  if (token) {
+    try {
+      const decoded = jwt.verify(token, JWT_SECRET);
+      passenger_id = decoded.id;
+    } catch(err) {}
+  }
+  
   const query = `
-    SELECT rides.*, users.name as driver_name 
+    SELECT rides.*, users.name as driver_name,
+    (SELECT COUNT(*) FROM bookings WHERE ride_id = rides.id AND passenger_id = ?) as is_joined,
+    (SELECT GROUP_CONCAT(passenger.name, ', ') FROM bookings JOIN users as passenger ON bookings.passenger_id = passenger.id WHERE bookings.ride_id = rides.id) as passengers
     FROM rides 
     JOIN users ON rides.driver_id = users.id 
-    WHERE rides.available_seats > 0
     ORDER BY rides.id DESC
   `;
-  db.all(query, [], (err, rows) => {
+  db.all(query, [passenger_id], (err, rows) => {
     if (err) return res.status(500).json({ error: 'Server error' });
     res.json(rows);
   });
@@ -146,6 +156,34 @@ app.post('/api/rides/:id/join', (req, res) => {
           
           res.json({ message: 'Successfully joined ride', co2_saved: 2.5 }); 
         });
+      });
+    });
+  } catch (error) {
+    res.status(401).json({ error: 'Invalid token' });
+  }
+});
+
+// Rides: Cancel Join
+app.delete('/api/rides/:id/join', (req, res) => {
+  const token = req.headers.authorization?.split(' ')[1];
+  if (!token) return res.status(401).json({ error: 'Unauthorized' });
+  
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    const passenger_id = decoded.id;
+    const ride_id = req.params.id;
+    
+    db.get(`SELECT * FROM bookings WHERE ride_id = ? AND passenger_id = ?`, [ride_id, passenger_id], (err, booking) => {
+      if (err) return res.status(500).json({ error: 'Database error' });
+      if (!booking) return res.status(400).json({ error: 'You are not joined to this ride' });
+      
+      db.run(`DELETE FROM bookings WHERE ride_id = ? AND passenger_id = ?`, [ride_id, passenger_id], (err) => {
+        if (err) return res.status(500).json({ error: 'Database error' });
+        
+        db.run(`UPDATE rides SET available_seats = available_seats + 1 WHERE id = ?`, [ride_id]);
+        db.run(`UPDATE users SET eco_score = eco_score - 25 WHERE id = ?`, [passenger_id]);
+        
+        res.json({ message: 'Successfully canceled booking' });
       });
     });
   } catch (error) {

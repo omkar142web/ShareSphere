@@ -15,7 +15,9 @@ export default function Dashboard() {
 
   const fetchRides = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/rides');
+      const res = await fetch('http://localhost:5000/api/rides', {
+        headers: token ? { Authorization: `Bearer ${token}` } : {}
+      });
       const data = await res.json();
       setRides(data);
     } catch (err) {
@@ -67,6 +69,26 @@ export default function Dashboard() {
     setTimeout(() => { setError(''); setMessage(''); }, 4000);
   };
 
+  const handleCancelJoin = async (id) => {
+    if (!window.confirm("Are you sure you want to cancel your seat?")) return;
+    try {
+      const res = await fetch(`http://localhost:5000/api/rides/${id}/join`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setMessage(data.message);
+        fetchRides();
+      } else {
+        setError(data.error);
+      }
+    } catch (err) {
+      setError('Failed to cancel booking');
+    }
+    setTimeout(() => { setError(''); setMessage(''); }, 4000);
+  };
+
   if (loading) return <div className="container text-center mt-8 text-secondary">Loading rides...</div>;
 
   return (
@@ -92,7 +114,12 @@ export default function Dashboard() {
               <div className="text-secondary" style={{ fontSize: '0.9rem' }}>
                 <div style={{ marginBottom: '4px' }}>🕒 {ride.time}</div>
                 <div style={{ marginBottom: '4px' }}>🚗 Driver: <span style={{ color: 'var(--text-primary)'}}>{ride.driver_name}</span></div>
-                <div>🪑 Seats: {ride.available_seats} / {ride.total_seats}</div>
+                <div style={{ marginBottom: '4px' }}>🪑 Seats: {ride.available_seats} / {ride.total_seats}</div>
+                {(user.name === ride.driver_name && ride.total_seats !== ride.available_seats) && (
+                  <div style={{ marginTop: '8px', padding: '8px', background: 'rgba(255,255,255,0.05)', borderRadius: '6px' }}>
+                    <span style={{ color: 'var(--accent)', fontWeight: 600 }}>Passengers:</span> {ride.passengers}
+                  </div>
+                )}
               </div>
 
               <div style={{ marginTop: 'auto', paddingTop: '16px' }}>
@@ -103,6 +130,15 @@ export default function Dashboard() {
                     style={{ borderColor: 'var(--danger)', color: 'var(--danger)' }}
                   >
                     Delete Ride
+                  </button>
+                ) : ride.is_joined ? (
+                  <button 
+                    onClick={() => handleCancelJoin(ride.id)}
+                    className="btn btn-primary btn-full" 
+                    style={{ background: '#059669', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+                  >
+                    <span>✅ Joined</span>
+                    <span style={{ fontSize: '0.85em', opacity: 0.8, fontWeight: 'normal' }}>Cancel</span>
                   </button>
                 ) : (
                   <button 
