@@ -148,7 +148,7 @@
 
     var leaveBtn = e.target.closest(".btn-leave");
     if (leaveBtn) {
-      rideAction(leaveBtn, "/rides/" + leaveBtn.dataset.rideId + "/leave", "POST", "Cancel your seat on this ride?", "You've left the ride.");
+      rideAction(leaveBtn, "/rides/" + leaveBtn.dataset.rideId + "/join", "DELETE", "Cancel your seat on this ride?", "You've left the ride.");
       return;
     }
 
