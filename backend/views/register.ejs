@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Register - ShareSphere</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <nav class="navbar">
+    <a href="/" class="logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M5 17a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2"/>
+        <path d="M9 17h6"/>
+        <circle cx="7" cy="17" r="2"/>
+        <circle cx="17" cy="17" r="2"/>
+      </svg>
+      ShareSphere
+    </a>
+    <div class="nav-links">
+      <a href="/login">Log in</a>
+    </div>
+  </nav>
+
+  <div class="form-container">
+    <h1>Join ShareSphere</h1>
+    <p class="subtitle">Sign up with your college email and start carpooling.</p>
+
+    <form id="registerForm" method="POST" data-ajax>
+      <div class="form-error" id="registerError"></div>
+      <div class="form-group">
+        <label for="name">Name</label>
+        <input required type="text" id="name" name="name" placeholder="Your name" autocomplete="name" />
+      </div>
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input required type="email" id="email" name="email" placeholder="you@college.edu" autocomplete="email" />
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input required type="password" id="password" name="password" placeholder="Create a password" autocomplete="new-password" />
+      </div>
+      <button class="btn btn-primary" type="submit" style="width:100%;padding:0.75rem;font-size:1rem">Create Account</button>
+    </form>
+
+    <div class="form-footer">
+      Already have an account? <a href="/login">Log in</a>
+    </div>
+  </div>
+
+  <script src="/js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard - ShareSphere</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/style.css" />
+  <style>
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      padding: 1.5rem 2rem 0;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      backdrop-filter: blur(8px);
+    }
+    .stat-card .stat-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 500;
+    }
+    .stat-card .stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-top: 0.3rem;
+      color: var(--emerald-light);
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <a href="/" class="logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M5 17a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2"/>
+        <path d="M9 17h6"/>
+        <circle cx="7" cy="17" r="2"/>
+        <circle cx="17" cy="17" r="2"/>
+      </svg>
+      ShareSphere
+    </a>
+    <div class="nav-links">
+      <a href="/post-ride" class="btn btn-primary btn-sm">+ Post Ride</a>
+      <span class="eco-badge"><%= user.eco_score || 0 %> pts</span>
+      <a href="/logout">Logout</a>
+    </div>
+  </nav>
+
+  <div class="dashboard-header">
+    <div>
+      <h1>Available Rides</h1>
+      <p>Welcome back, <strong><%= user.name %></strong></p>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat-card">
+      <div class="stat-label">Total Rides</div>
+      <div class="stat-value"><%= rides.length %></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Your Eco Score</div>
+      <div class="stat-value"><%= user.eco_score || 0 %></div>
+    </div>
+  </div>
+
+  <% if (rides.length === 0) { %>
+    <div class="empty-state">
+      <div class="empty-icon">🚗</div>
+      <h3>No rides available yet</h3>
+      <p>Be the first to post a ride!</p>
+      <a href="/post-ride" class="btn btn-primary" style="margin-top:0.5rem">Post a Ride</a>
+    </div>
+  <% } else { %>
+    <div class="rides-grid">
+      <% rides.forEach(function(ride, index) { %>
+        <div class="card ride-card">
+          <div class="route">
+            <span class="location"><%= ride.origin %></span>
+            <span class="arrow">→</span>
+            <span class="location"><%= ride.destination %></span>
+          </div>
+          <div class="meta">
+            <span><%= ride.time %></span>
+            <span><%= ride.availableSeats %>/<%= ride.totalSeats %> seats</span>
+          </div>
+          <div class="driver">
+            Driver: <strong><%= ride.driverName %></strong>
+          </div>
+          <% if (ride.passengers.length > 0) { %>
+            <div class="passengers">
+              Passengers:
+              <% ride.passengers.forEach(function(p) { %>
+                <span class="passenger-tag"><%= p.name %></span>
+              <% }); %>
+            </div>
+          <% } %>
+          <div class="card-actions">
+            <% if (ride.driverEmail === user.email) { %>
+              <button class="btn btn-danger btn-sm btn-delete-ride" data-ride-id="<%= ride._id %>">Delete</button>
+            <% } else if (ride.hasJoined) { %>
+              <button class="btn btn-outline btn-sm btn-leave" data-ride-id="<%= ride._id %>">Cancel Join</button>
+            <% } else if (ride.availableSeats > 0) { %>
+              <button class="btn btn-primary btn-sm btn-join" data-ride-id="<%= ride._id %>">Join Ride</button>
+            <% } else { %>
+              <span style="color:var(--text-muted)">Full</span>
+            <% } %>
+          </div>
+        </div>
+      <% }); %>
+    </div>
+  <% } %>
+
+  <script src="/js/main.js"></script>
+</body>
+</html>
