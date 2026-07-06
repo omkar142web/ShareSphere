@@ -18,8 +18,8 @@
   <div class="nav-links">
     <% if (navUser) { %>
       <% if (navActive !== 'dashboard') { %><a href="/dashboard">Dashboard</a><% } %>
-      <% if (navActive !== 'post-ride') { %><a href="/post-ride" class="btn btn-primary btn-sm">+ Post Ride</a><% } %>
       <span class="eco-badge"><%= navUser.eco_score || 0 %> pts</span>
+      <% if (navActive !== 'post-ride') { %><a href="/post-ride" class="btn btn-primary btn-sm">+ Post Ride</a><% } %>
       <a href="/logout">Logout</a>
     <% } else if (navActive === 'login') { %>
       <a href="/register">Sign up</a>
