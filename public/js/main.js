@@ -86,9 +86,70 @@
     });
   });
 
+  /* ---------------- Ride card DOM updater ---------------- */
+  function updateRideCard(card, data) {
+    var meta = card.querySelector(".meta");
+    if (meta) {
+      var seatsSpan = meta.querySelector(".seats-left, .seats-full");
+      if (seatsSpan) {
+        seatsSpan.className = data.availableSeats > 0 ? "seats-left" : "seats-full";
+        seatsSpan.textContent = data.availableSeats + "/" + data.totalSeats + " seats";
+      }
+    }
+
+    var oldPassengers = card.querySelector(".passengers");
+    if (oldPassengers) oldPassengers.remove();
+
+    if (data.passengers && data.passengers.length > 0) {
+      var passengersDiv = document.createElement("div");
+      passengersDiv.className = "passengers";
+      passengersDiv.appendChild(document.createTextNode("Passengers: "));
+      data.passengers.forEach(function (p) {
+        var tag = document.createElement("span");
+        tag.className = "passenger-tag";
+        tag.textContent = p.name;
+        passengersDiv.appendChild(tag);
+      });
+      var driver = card.querySelector(".driver");
+      if (driver) {
+        driver.parentNode.insertBefore(passengersDiv, driver.nextSibling);
+      }
+    }
+
+    var actions = card.querySelector(".card-actions");
+    if (!actions) return;
+    var rideId = card.querySelector("[data-ride-id]");
+    if (!rideId) return;
+    var id = rideId.dataset.rideId;
+    var driverEmail = card.getAttribute("data-driver-email");
+    var userEmail = document.body.getAttribute("data-user-email");
+
+    var html = "";
+    if (driverEmail === userEmail) {
+      html = '<button class="btn btn-danger btn-sm btn-delete-ride" data-ride-id="' + id + '">' +
+               '<span class="btn-label">Delete</span>' +
+               '<span class="spinner" aria-hidden="true"></span>' +
+             '</button>';
+    } else if (data.hasJoined) {
+      html = '<button class="btn btn-outline btn-sm btn-leave" data-ride-id="' + id + '">' +
+               '<span class="btn-label">Cancel join</span>' +
+               '<span class="spinner" aria-hidden="true"></span>' +
+             '</button>';
+    } else if (data.availableSeats > 0) {
+      html = '<button class="btn btn-primary btn-sm btn-join" data-ride-id="' + id + '">' +
+               '<span class="btn-label">Join ride</span>' +
+               '<span class="spinner" aria-hidden="true"></span>' +
+             '</button>';
+    } else {
+      html = '<span class="status-pill">Full</span>';
+    }
+    actions.innerHTML = html;
+  }
+
   /* ---------------- Ride actions (join / cancel / delete) ---------------- */
   function rideAction(btn, url, method, confirmMessage, successMessage) {
     if (confirmMessage && !window.confirm(confirmMessage)) return;
+    var card = btn.closest(".ride-card");
     setLoading(btn, true);
     fetch(url, { method: method, headers: { "Content-Type": "application/json" } })
       .then(function (res) {
@@ -99,11 +160,18 @@
       .then(function (result) {
         if (!result.ok) {
           setLoading(btn, false);
-          toast((result.data && result.data.error) || "Couldn't complete that action.", "error");
+          toast((result.data && result.data.message) || "Couldn't complete that action.", "error");
           return;
         }
         toast(successMessage);
-        setTimeout(function () { window.location.reload(); }, 500);
+        if (card && result.data.availableSeats !== undefined) {
+          updateRideCard(card, result.data);
+        } else if (card) {
+          card.style.transition = "opacity 0.2s ease, transform 0.2s ease";
+          card.style.opacity = "0";
+          card.style.transform = "translateY(-8px)";
+          setTimeout(function () { card.remove(); }, 250);
+        }
       })
       .catch(function () {
         setLoading(btn, false);

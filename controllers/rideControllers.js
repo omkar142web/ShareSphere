@@ -173,7 +173,20 @@ export const joinRide = async (req, res) => {
       eco_score: (user.eco_score || 0) + 25,
     });
 
-    return res.json({ success: true, message: "Joined ride!" });
+    var updatedRide = await findRideById(rideId);
+    var bookings = await getBookingsForRide(rideId);
+    var passengers = bookings.map(function (b) {
+      return { email: b.passengerEmail, name: b.passengerName };
+    });
+
+    return res.json({
+      success: true,
+      message: "Joined ride!",
+      availableSeats: updatedRide.availableSeats,
+      totalSeats: updatedRide.totalSeats,
+      hasJoined: true,
+      passengers: passengers,
+    });
   } catch (err) {
     console.error("Join ride error:", err);
     return res
@@ -218,7 +231,20 @@ export const leaveRide = async (req, res) => {
       eco_score: Math.max(0, (user.eco_score || 0) - 25),
     });
 
-    return res.json({ success: true, message: "Left the ride." });
+    var updatedRide = await findRideById(rideId);
+    var bookings = await getBookingsForRide(rideId);
+    var passengers = bookings.map(function (b) {
+      return { email: b.passengerEmail, name: b.passengerName };
+    });
+
+    return res.json({
+      success: true,
+      message: "Left the ride.",
+      availableSeats: updatedRide.availableSeats,
+      totalSeats: updatedRide.totalSeats,
+      hasJoined: false,
+      passengers: passengers,
+    });
   } catch (err) {
     console.error("Leave ride error:", err);
     return res

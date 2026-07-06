@@ -3,7 +3,7 @@
 <head>
   <%- include('partials/head', { title: 'Dashboard' }) %>
 </head>
-<body>
+<body data-user-email="<%= user.email %>">
   <%- include('partials/navbar', { active: 'dashboard', user: user }) %>
 
   <div class="dashboard-header">
@@ -34,7 +34,7 @@
   <% } else { %>
     <div class="rides-grid">
       <% rides.forEach(function(ride) { %>
-        <div class="card ride-card">
+        <div class="card ride-card" data-driver-email="<%= ride.driverEmail %>">
           <div class="route">
             <span class="location origin" data-full="<%= ride.origin %>"><%= ride.origin %></span>
             <span class="arrow" aria-hidden="true">
