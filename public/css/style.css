@@ -980,8 +980,8 @@ svg {
     max-width: none;
   }
 
-  .container {
-    justify-content: center;
+  .site-footer .container {
+    justify-content: center !important;
   }
 
   .nav-links {
