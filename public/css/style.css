@@ -841,6 +841,32 @@ svg {
   -webkit-box-orient: vertical;
   overflow: hidden;
   line-height: 1.35;
+  cursor: default;
+}
+
+.ride-card .route .location.is-truncated {
+  cursor: pointer;
+  position: relative;
+}
+
+.ride-card .route .location.is-truncated::after {
+  content: "•••";
+  display: inline;
+  color: var(--brand-light);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  margin-left: 0.25rem;
+  opacity: 0.6;
+  pointer-events: none;
+  vertical-align: middle;
+}
+
+.ride-card .route .location.is-truncated:hover {
+  color: var(--brand-light);
+}
+
+.ride-card .route .location.is-truncated:hover::after {
+  opacity: 1;
 }
 
 .ride-card .meta {

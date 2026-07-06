@@ -159,8 +159,22 @@
     }
 
     var loc = e.target.closest(".location");
-    if (loc && loc.scrollHeight > loc.clientHeight) {
+    if (loc && loc.classList.contains("is-truncated")) {
       openLocationModal(loc.getAttribute("data-full") || loc.textContent);
     }
   });
+
+  /* Mark truncated locations with a visual cue */
+  function markTruncatedLocations() {
+    document.querySelectorAll(".location").forEach(function (el) {
+      if (el.scrollHeight > el.clientHeight) {
+        el.classList.add("is-truncated");
+      }
+    });
+  }
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", markTruncatedLocations);
+  } else {
+    markTruncatedLocations();
+  }
 })();
