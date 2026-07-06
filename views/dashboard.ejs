@@ -36,11 +36,11 @@
       <% rides.forEach(function(ride) { %>
         <div class="card ride-card">
           <div class="route">
-            <span class="location"><%= ride.origin %></span>
+            <span class="location origin" data-full="<%= ride.origin %>"><%= ride.origin %></span>
             <span class="arrow" aria-hidden="true">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="m5 12 7 7 7-7"/></svg>
             </span>
-            <span class="location"><%= ride.destination %></span>
+            <span class="location destination" data-full="<%= ride.destination %>"><%= ride.destination %></span>
           </div>
 
           <div class="route-line" aria-hidden="true">

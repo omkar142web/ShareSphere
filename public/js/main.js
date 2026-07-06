@@ -111,6 +111,34 @@
       });
   }
 
+  /* ---------------- Location modal (truncated addresses) ---------------- */
+  function openLocationModal(text) {
+    var existing = document.querySelector(".location-modal-overlay");
+    if (existing) existing.remove();
+
+    var overlay = document.createElement("div");
+    overlay.className = "location-modal-overlay";
+    overlay.innerHTML =
+      '<div class="location-modal">' +
+        '<p>' + escapeHTML(text) + '</p>' +
+        '<button class="btn btn-primary btn-block">Got it</button>' +
+      '</div>';
+    document.body.appendChild(overlay);
+
+    overlay.querySelector(".btn").addEventListener("click", function () {
+      overlay.remove();
+    });
+    overlay.addEventListener("click", function (e) {
+      if (e.target === overlay) overlay.remove();
+    });
+  }
+
+  function escapeHTML(str) {
+    var div = document.createElement("div");
+    div.appendChild(document.createTextNode(str));
+    return div.innerHTML;
+  }
+
   document.addEventListener("click", function (e) {
     var joinBtn = e.target.closest(".btn-join");
     if (joinBtn) {
@@ -128,6 +156,11 @@
     if (deleteBtn) {
       rideAction(deleteBtn, "/rides/" + deleteBtn.dataset.rideId, "DELETE", "Delete this ride? This can't be undone.", "Ride deleted.");
       return;
+    }
+
+    var loc = e.target.closest(".location");
+    if (loc && loc.scrollHeight > loc.clientHeight) {
+      openLocationModal(loc.getAttribute("data-full") || loc.textContent);
     }
   });
 })();
