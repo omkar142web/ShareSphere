@@ -50,7 +50,7 @@
           </div>
 
           <div class="meta">
-            <span><%= ride.time %></span>
+            <span><%= new Date(ride.time).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) %></span>
             <span class="<%= ride.availableSeats > 0 ? 'seats-left' : 'seats-full' %>">
               <%= ride.availableSeats %>/<%= ride.totalSeats %> seats
             </span>

@@ -845,6 +845,8 @@ svg {
   font-size: 0.82rem;
   color: var(--text-muted);
   font-family: var(--font-mono);
+  word-spacing: -3px;
+  letter-spacing: -1px;
 }
 
 .ride-card .seats-left {
@@ -992,11 +994,11 @@ svg {
     font-size: 1.05rem;
   }
 
-  .btn-sm{
-    padding: 0.40rem 0.55rem;
+  .btn-sm {
+    padding: 0.4rem 0.55rem;
   }
 
-  .eco-badge{
+  .eco-badge {
     padding: 0.35rem 0.55rem;
   }
 }
