@@ -1,0 +1,3284 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Share Info — Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
+  <!-- <link rel="stylesheet" href="css/home.css" /> -->
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=JetBrains+Mono:wght@400;500&display=swap");
+
+    /* ============================================================
+   Design System — Share Info Dashboard
+   Dark Glassmorphism · Masonry Wall · Linear/Vercel aesthetic
+   ============================================================ */
+
+    :root {
+      /* Core palette */
+      --bg: #0d1628;
+      /* was #080d1a  — slightly lifted dark navy */
+      --surface-0: #111e35;
+      /* was #0c1220 */
+      --surface-1: rgba(22,
+          34,
+          58,
+          0.82);
+      /* was rgba(16,24,40,0.80) — more visible card surface */
+      --surface-2: rgba(30, 46, 74, 0.65);
+      /* was rgba(22,34,58,0.55) */
+      --surface-hover: rgba(36, 54, 88, 0.75);
+      /* was rgba(30,48,80,0.70) */
+
+      /* Cyan accent system */
+      --cyan: #38bdf8;
+      --cyan-dim: #0ea5e9;
+      --cyan-faint: rgba(56, 189, 248, 0.12);
+      --cyan-glow: rgba(56, 189, 248, 0.22);
+      --cyan-border: rgba(56, 189, 248, 0.25);
+
+      /* Semantic */
+      --success: #34d399;
+      --success-faint: rgba(52, 211, 153, 0.1);
+      --success-border: rgba(52, 211, 153, 0.22);
+      --danger: #fb7185;
+      --danger-faint: rgba(251, 113, 133, 0.1);
+      --danger-border: rgba(251, 113, 133, 0.22);
+
+      /* Text */
+      --text: #f0f6ff;
+      --text-2: #a8bdd4;
+      /* was #94a3b8 — slightly brighter muted text */
+      --text-3: #607a96;
+      /* was #4d6480 — more readable subtle text */
+
+      /* Borders */
+      --border: rgba(255, 255, 255, 0.09);
+      /* was 0.06 */
+      --border-md: rgba(255, 255, 255, 0.13);
+      /* was 0.10 */
+      --border-hi: rgba(255, 255, 255, 0.2);
+      /* was 0.14 */
+
+      /* Shadows */
+      --shadow-card:
+        0 0 0 1px var(--border), 0 8px 40px rgba(0, 0, 0, 0.55),
+        0 2px 8px rgba(0, 0, 0, 0.3);
+      --shadow-hover:
+        0 0 0 1px var(--cyan-border), 0 16px 60px rgba(0, 0, 0, 0.65),
+        0 0 40px var(--cyan-glow);
+      --shadow-modal: 0 0 0 1px var(--border-hi), 0 32px 80px rgba(0, 0, 0, 0.62);
+
+      /* Layering */
+      --z-modal: 1000;
+      --z-toast: 1100;
+
+      /* Type */
+      --font-display: "Sora", system-ui, sans-serif;
+      --font-body: "DM Sans", system-ui, sans-serif;
+      --font-mono: "JetBrains Mono", monospace;
+
+      /* Spacing */
+      --header-h: 68px;
+      --gap: 18px;
+      --radius: 16px;
+      --radius-sm: 10px;
+    }
+
+    /* ── Reset ─────────────────────────────────────── */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background-color: var(--bg);
+      min-height: 100dvh;
+      color: var(--text);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* ── Ambient background orbs ────────────────────── */
+    .bg-orbs {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0;
+      animation: orb-fade-in 1.8s ease forwards;
+    }
+
+    @keyframes orb-fade-in {
+      to {
+        opacity: 1;
+      }
+    }
+
+    .orb-1 {
+      width: 600px;
+      height: 600px;
+      top: -200px;
+      left: -150px;
+      background: radial-gradient(circle,
+          rgba(56, 189, 248, 0.08) 0%,
+          transparent 70%);
+      animation-delay: 0.2s;
+    }
+
+    .orb-2 {
+      width: 500px;
+      height: 500px;
+      top: 30%;
+      right: -180px;
+      background: radial-gradient(circle,
+          rgba(14, 165, 233, 0.06) 0%,
+          transparent 70%);
+      animation-delay: 0.5s;
+    }
+
+    .orb-3 {
+      width: 400px;
+      height: 400px;
+      bottom: -100px;
+      left: 30%;
+      background: radial-gradient(circle,
+          rgba(56, 189, 248, 0.05) 0%,
+          transparent 70%);
+      animation-delay: 0.8s;
+    }
+
+    /* ── Grid texture overlay ───────────────────────── */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.018) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.018) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── Search + Sort UI ───────────────────────────── */
+    .search-row {
+      display: flex;
+      gap: 10px;
+      align-items: stretch;
+      margin-bottom: 20px;
+    }
+
+    .search-row input {
+      flex: 1;
+      min-height: 44px;
+      padding: 0 14px;
+      border-radius: 8px;
+      border: 1px solid var(--border-hi);
+      background: rgba(13, 22, 40, 0.72);
+      color: var(--text);
+      font: 500 14px var(--font-body);
+      outline: none;
+    }
+
+    .search-input-wrap {
+      position: relative;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .search-input-wrap input {
+      width: 100%;
+      padding-right: 36px;
+    }
+
+    .search-clear {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: #888;
+      cursor: pointer;
+      padding: 4px;
+      display: flex;
+      border-radius: 50%;
+      transition: color 0.15s, background 0.15s;
+    }
+
+    .search-clear[hidden] {
+      display: none;
+    }
+
+    .search-clear:hover {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .sort-wrap {
+      position: relative;
+      flex: 0 0 auto;
+    }
+
+    .sort-btn {
+      width: 44px;
+      height: 44px;
+      border: 1px solid var(--border-hi);
+      border-radius: 8px;
+      background: rgba(13, 22, 40, 0.72);
+      color: var(--text-2);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition:
+        background 0.14s,
+        border-color 0.14s,
+        color 0.14s,
+        transform 0.12s;
+    }
+
+    .sort-btn[aria-expanded="true"] {
+      color: var(--cyan);
+      border-color: var(--cyan-border);
+      background: rgba(56, 189, 248, 0.09);
+    }
+
+    .sort-menu {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      z-index: 35;
+      width: 180px;
+      padding: 6px;
+      border: 1px solid var(--border-hi);
+      border-radius: 10px;
+      background: rgba(12, 20, 36, 0.96);
+      box-shadow: 0 18px 42px rgba(0, 0, 0, 0.45);
+      backdrop-filter: blur(18px) saturate(1.25);
+      -webkit-backdrop-filter: blur(18px) saturate(1.25);
+    }
+
+    .sort-menu[hidden] {
+      display: none;
+    }
+
+    .sort-option {
+      width: 100%;
+      min-height: 36px;
+      padding: 0 10px;
+      border: 0;
+      border-radius: 7px;
+      background: transparent;
+      color: var(--text-2);
+      cursor: pointer;
+      font: 700 12px var(--font-body);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      text-align: left;
+    }
+
+    .sort-option:not(:first-child) {
+      margin-top: 6px;
+    }
+
+    .sort-option svg {
+      opacity: 0;
+      color: var(--cyan);
+      flex-shrink: 0;
+    }
+
+    .sort-option.is-active {
+      color: var(--text);
+      background: rgba(56, 189, 248, 0.1);
+    }
+
+    .sort-option.is-active svg {
+      opacity: 1;
+    }
+
+    @media (hover: hover) {
+      .sort-btn:hover,
+      .sort-option:hover {
+        color: var(--text);
+        background: rgba(255, 255, 255, 0.08);
+      }
+
+      .sort-btn:hover {
+        transform: translateY(-1px);
+      }
+    }
+
+    /* ── Header ─────────────────────────────────────── */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      height: var(--header-h);
+      background: rgba(8, 13, 26, 0.82);
+      border-bottom: 1px solid var(--border-md);
+      backdrop-filter: blur(24px) saturate(1.4);
+      -webkit-backdrop-filter: blur(24px) saturate(1.4);
+    }
+
+    .header-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 28px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    /* Brand */
+    .header-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      user-select: none;
+    }
+
+    .brand-pulse {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow:
+        0 0 10px var(--cyan),
+        0 0 20px var(--cyan-glow);
+      animation: pulse 2.4s ease-in-out infinite;
+      flex-shrink: 0;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      50% {
+        opacity: 0.5;
+        transform: scale(0.7);
+      }
+    }
+
+    .brand-title {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      font-weight: 800;
+      /* letter-spacing: -0.04em; */
+      color: var(--text);
+      cursor: pointer;
+    }
+
+    .brand-title em {
+      font-style: normal;
+      color: var(--cyan);
+    }
+
+    .card-count-badge {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--cyan);
+      background: var(--cyan-faint);
+      border: 1px solid var(--cyan-border);
+      border-radius: 100px;
+      padding: 2px 8px;
+      letter-spacing: 0.05em;
+    }
+
+    /* Header actions */
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* ── Breadcrumb ── */
+    .breadcrumb {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--surface-1);
+      border: 0.5px solid var(--border);
+      border-radius: 99px;
+      padding: 5px 12px;
+      font-size: 13px;
+      color: var(--text-3);
+      margin-bottom: 18px;
+    }
+
+    .breadcrumb a {
+      color: var(--text-2);
+      text-decoration: none;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: color 100ms;
+    }
+
+    .breadcrumb a:hover {
+      color: var(--text);
+    }
+
+    .breadcrumb .sep {
+      color: var(--text-3);
+    }
+
+    .breadcrumb .current {
+      color: var(--text);
+      font-weight: 500;
+      text-decoration: underline;
+    }
+
+    @media (max-width: 480px) {
+      .breadcrumb {
+        font-size: 12px;
+        padding: 4px 10px;
+      }
+    }
+
+    /* ── Buttons ─────────────────────────────────────── */
+    .btn-primary {
+      font-family: var(--font-body);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 9px 18px;
+      background: var(--cyan);
+      color: #040b18;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      letter-spacing: 0.01em;
+      transition:
+        background 0.15s,
+        transform 0.12s,
+        box-shadow 0.15s;
+      white-space: nowrap;
+    }
+
+    @media (hover: hover) {
+      .btn-primary:hover {
+        background: #7dd3fc;
+        transform: translateY(-1px);
+        box-shadow: 0 6px 24px var(--cyan-glow);
+      }
+    }
+
+    .btn-primary:active {
+      transform: scale(0.96);
+    }
+
+    .btn-ghost {
+      font-family: var(--font-body);
+      font-size: 13px;
+      font-weight: 500;
+      padding: 8px 15px;
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text-2);
+      border: 1px solid var(--border-md);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition:
+        background 0.15s,
+        color 0.15s,
+        border-color 0.15s,
+        transform 0.12s;
+      white-space: nowrap;
+    }
+
+    @media (hover: hover) {
+      .btn-ghost:hover {
+        background: rgba(255, 255, 255, 0.08);
+        color: var(--text);
+        border-color: var(--border-hi);
+        transform: translateY(-1px);
+      }
+    }
+
+    .btn-ghost:active {
+      transform: scale(0.96);
+    }
+
+    /* ── Main layout ─────────────────────────────────── */
+    .main-content {
+      position: relative;
+      z-index: 1;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 40px 28px 80px;
+    }
+
+    /* ── Masonry wall (grid — row-wise fill) ─────────── */
+    .masonry-wall {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: var(--gap);
+      align-items: start;
+      /* cards keep natural height; no row stretching */
+    }
+
+    /* ── Info card base ──────────────────────────────── */
+    .info-card {
+      width: 100%;
+      background: var(--surface-1);
+      border: 1px solid var(--border-md);
+      border-radius: var(--radius);
+      padding: 0;
+      overflow: hidden;
+      position: relative;
+      cursor: default;
+      box-shadow: var(--shadow-card);
+      backdrop-filter: blur(20px) saturate(1.3);
+      -webkit-backdrop-filter: blur(20px) saturate(1.3);
+
+      /* entrance animation */
+      opacity: 0;
+      transform: translateY(18px);
+      animation: card-in 0.5s ease forwards;
+
+      /* ADD THIS */
+      transition:
+        transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1),
+        box-shadow 0.22s ease,
+        border-color 0.22s ease;
+    }
+
+    .info-card.is-removing {
+      animation: none;
+      pointer-events: none;
+      z-index: 50;
+      opacity: 0;
+      transform: scale(0.9) translateY(20px);
+      filter: blur(8px);
+      transition:
+        opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+        transform 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+        filter 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    @keyframes card-in {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Top glow line */
+    .info-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+      opacity: 0.4;
+      transition: opacity 0.25s;
+    }
+
+    /* Card types get subtle tint variants */
+    .card-long {
+      cursor: pointer;
+      border-color: rgba(139, 92, 246, 0.12);
+    }
+
+    .card-long::before {
+      background: linear-gradient(90deg, transparent, #a78bfa, transparent);
+    }
+
+    .card-plain {
+      /* default */
+    }
+
+    /* Hover */
+    @media (hover: hover) {
+      .info-card:hover::before {
+        opacity: 0.9;
+      }
+
+      .info-card:hover {
+        box-shadow: var(--shadow-hover);
+        transform: translateY(-3px);
+        border-color: var(--border-hi);
+        transition:
+          transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1),
+          box-shadow 0.22s ease,
+          border-color 0.22s ease;
+      }
+
+      .card-long:hover {
+        box-shadow:
+          0 0 0 1px rgba(139, 92, 246, 0.3),
+          0 16px 60px rgba(0, 0, 0, 0.65),
+          0 0 40px rgba(139, 92, 246, 0.2);
+      }
+    }
+
+    /* ── Card type strip (badge) ─────────────────────── */
+    .card-type-strip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-family: var(--font-mono);
+      font-size: 9.5px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      padding: 10px 16px 8px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .card-long .card-type-strip {
+      color: #a78bfa;
+    }
+
+    .card-plain .card-type-strip {
+      color: var(--text-3);
+    }
+
+    /* ── Card header ─────────────────────────────────── */
+    .card-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 11px;
+      padding: 12px 16px 10px;
+    }
+
+    .info-card:focus-within .card-copy-icon {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    .card-avatar {
+      flex-shrink: 0;
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: linear-gradient(135deg,
+          var(--surface-2),
+          rgba(56, 189, 248, 0.15));
+      border: 1px solid var(--border-hi);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--cyan);
+      letter-spacing: -0.02em;
+    }
+
+    .card-meta {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .card-name {
+      font-family: var(--font-display);
+      font-size: 14.5px;
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: -0.03em;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      line-height: 1.2;
+    }
+
+    .card-email {
+      font-size: 11.5px;
+      color: var(--text-3);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-weight: 400;
+    }
+
+    .card-index-badge {
+      flex-shrink: 0;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-3);
+      letter-spacing: 0.04em;
+      margin-top: 2px;
+    }
+
+    /* ── Card body ───────────────────────────────────── */
+    .card-body {
+      padding: 4px 16px 14px;
+    }
+
+    .info-card.card-pending .card-text,
+    .info-card.card-pending .view-more-btn {
+      opacity: 0;
+    }
+
+    /* Text content */
+    .card-text {
+      font-size: 13.5px;
+      line-height: 1.65;
+      color: var(--text-2);
+      word-break: break-word;
+      white-space: pre-wrap;
+    }
+
+    /* Snippet for long cards */
+    .card-text-snippet {
+      display: -webkit-box;
+      -webkit-line-clamp: 5;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .ellipsis-fade {
+      color: var(--text-3);
+    }
+
+    /* View more button */
+    .view-more-btn {
+      margin-top: 12px;
+      font-family: var(--font-body);
+      font-size: 11.5px;
+      font-weight: 600;
+      color: #a78bfa;
+      background: rgba(139, 92, 246, 0.1);
+      border: 1px solid rgba(139, 92, 246, 0.2);
+      border-radius: 8px;
+      padding: 6px 13px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition:
+        background 0.15s,
+        color 0.15s,
+        transform 0.12s,
+        box-shadow 0.15s;
+      letter-spacing: 0.01em;
+    }
+
+    .view-more-btn[hidden] {
+      display: none;
+    }
+
+    @media (hover: hover) {
+      .view-more-btn:hover {
+        background: rgba(139, 92, 246, 0.18);
+        color: #c4b5fd;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 16px rgba(139, 92, 246, 0.2);
+      }
+    }
+
+    .card-copy-icon {
+      position: absolute;
+      /* top: 10px; */
+      top: 2px;
+      /* right: 10px; */
+      right: 3px;
+      width: 32px;
+      height: 32px;
+      font-family: var(--font-body);
+      font-weight: 600;
+      color: var(--cyan);
+      /* background: rgba(17, 24, 39, 0.65); */
+      background: transparent;
+      /* border: 1px solid var(--border); */
+      border: none;
+      border-radius: 8px;
+      padding: 0;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transform: translateY(-2px) scale(0.92);
+      z-index: 3;
+      backdrop-filter: blur(8px);
+      transition:
+        opacity 0.18s,
+        transform 0.18s,
+        background 0.15s,
+        color 0.15s,
+        border-color 0.15s,
+        box-shadow 0.15s;
+    }
+
+    @media (hover: hover) {
+
+      .info-card:hover .card-copy-icon,
+      .card-copy-icon:hover,
+      .card-copy-icon:focus-visible {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+
+      .card-copy-icon:hover {
+        /* background: rgba(56, 189, 248, 0.16); */
+        color: #bae6fd;
+        /* border-color: rgba(56, 189, 248, 0.45); */
+        /* box-shadow: 0 4px 16px rgba(56, 189, 248, 0.22); */
+        text-shadow: 0 4px 16px rgba(56, 189, 248, 0.22);
+      }
+    }
+
+    @media (hover: none) {
+      .card-copy-icon {
+        opacity: 0.75;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .card-copy-icon:focus-visible {
+      outline: 2px solid var(--cyan-border);
+      outline-offset: 2px;
+    }
+
+    .card-copy-icon.is-copied {
+      /* background: var(--success-faint); */
+      color: var(--success);
+      /* border-color: var(--success-border); */
+      opacity: 1;
+      transform: translateY(0) scale(1.08);
+    }
+
+    .inline-link {
+      color: #67d8ff;
+      font-weight: 500;
+      text-decoration: none;
+      overflow-wrap: anywhere;
+      text-shadow: 0 0 14px rgba(56, 189, 248, 0.18);
+      background-image: linear-gradient(var(--cyan-glow), var(--cyan-glow));
+      background-repeat: no-repeat;
+      background-size: 100% 1px;
+      background-position: 0 100%;
+      transition:
+        color 0.18s ease,
+        text-shadow 0.18s ease,
+        background-size 0.18s ease,
+        background-color 0.18s ease;
+    }
+
+    @media (hover: hover) {
+      .inline-link:hover {
+        color: #bae6fd;
+        text-shadow: 0 0 18px rgba(56, 189, 248, 0.36);
+        background-size: 100% 2px;
+        background-color: rgba(56, 189, 248, 0.06);
+      }
+    }
+
+    .inline-link:focus-visible {
+      outline: 2px solid var(--cyan-border);
+      outline-offset: 2px;
+      border-radius: 3px;
+    }
+
+    /* ── Card footer (actions) ───────────────────────── */
+    .card-footer {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px 14px;
+      border-top: 1px solid var(--border);
+    }
+
+    .action-btn {
+      font-family: var(--font-body);
+      font-size: 11.5px;
+      font-weight: 600;
+      padding: 6px 13px;
+      border-radius: 7px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition:
+        background 0.14s,
+        color 0.14s,
+        border-color 0.14s,
+        transform 0.1s,
+        box-shadow 0.14s;
+      border: 1px solid transparent;
+      letter-spacing: 0.01em;
+    }
+
+    .action-edit {
+      background: var(--success-faint);
+      color: var(--success);
+      border-color: var(--success-border);
+    }
+
+    .action-delete {
+      background: var(--danger-faint);
+      color: var(--danger);
+      border-color: var(--danger-border);
+    }
+
+    .action-copy {
+      background: var(--cyan-faint);
+      color: var(--cyan);
+      border-color: var(--cyan-border);
+    }
+
+    .filter-bar {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 500;
+      padding: 5px 12px;
+      border-radius: 100px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-3);
+      cursor: pointer;
+      transition:
+        background 0.12s,
+        color 0.12s,
+        border-color 0.12s,
+        transform 0.12s;
+    }
+
+    .filter-btn.active {
+      background: var(--cyan-faint);
+      color: var(--cyan);
+      border-color: var(--cyan-border);
+    }
+
+    @media (hover: hover) {
+      .action-edit:hover {
+        background: var(--success);
+        color: #04200f;
+        border-color: var(--success);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 14px rgba(52, 211, 153, 0.28);
+      }
+
+      .action-delete:hover {
+        background: var(--danger);
+        color: #240410;
+        border-color: var(--danger);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 14px rgba(251, 113, 133, 0.28);
+      }
+
+      .action-copy:hover {
+        background: var(--cyan);
+        color: #04111f;
+        border-color: var(--cyan);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 14px rgba(56, 189, 248, 0.28);
+      }
+
+      .filter-btn:hover {
+        color: var(--text-2);
+        border-color: var(--border-hi);
+        transform: translateY(-1px);
+      }
+    }
+
+    .action-btn:active {
+      transform: scale(0.94) !important;
+      transition-duration: 0.06s;
+    }
+
+    /* ── Empty state ─────────────────────────────────── */
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 100px 24px;
+      text-align: center;
+      gap: 20px;
+    }
+
+    .empty-glyph {
+      width: 96px;
+      height: 96px;
+      border-radius: 28px;
+      background: var(--surface-1);
+      border: 1px solid var(--border-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-3);
+      backdrop-filter: blur(12px);
+    }
+
+    .empty-title {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.04em;
+    }
+
+    .empty-desc {
+      max-width: 340px;
+      font-size: 14px;
+      color: var(--text-2);
+      line-height: 1.65;
+    }
+
+    /* ── Modal overlay ───────────────────────────────── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: var(--z-modal);
+      background: rgba(4, 8, 20, 0.75);
+      backdrop-filter: blur(9px) saturate(1.2);
+      -webkit-backdrop-filter: blur(9px) saturate(1.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+
+    .modal-overlay.is-open {
+      opacity: 1;
+    }
+
+    .modal-overlay[hidden] {
+      display: none;
+    }
+
+    .modal-glass {
+      width: 100%;
+      max-width: 620px;
+      max-height: 88dvh;
+      background: rgba(14, 22, 40, 0.9);
+      border: 1px solid var(--border-hi);
+      border-radius: 22px;
+      box-shadow: var(--shadow-modal);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+
+      /* entrance */
+      transform: translateY(24px) scale(0.97);
+      transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    /* Top accent bar on modal */
+    .modal-glass::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg,
+          transparent,
+          #a78bfa 40%,
+          var(--cyan) 60%,
+          transparent);
+      opacity: 0.7;
+    }
+
+    .modal-overlay.is-open .modal-glass {
+      transform: translateY(0) scale(1);
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 22px 24px 18px;
+    }
+
+    .modal-title-group {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+    }
+
+    .modal-avatar {
+      flex-shrink: 0;
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: linear-gradient(135deg,
+          var(--surface-2),
+          rgba(139, 92, 246, 0.2));
+      border: 1px solid rgba(139, 92, 246, 0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 700;
+      color: #a78bfa;
+    }
+
+    .modal-name {
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.04em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .modal-email {
+      font-size: 12px;
+      color: var(--text-3);
+      display: block;
+      margin-top: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .modal-actions {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .modal-copy {
+      height: 34px;
+      border-radius: 8px;
+      padding: 0 11px;
+      background: rgba(56, 189, 248, 0.08);
+      border: 1px solid var(--cyan-border);
+      color: var(--cyan);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-family: var(--font-body);
+      font-size: 12px;
+      font-weight: 600;
+      transition:
+        background 0.14s,
+        color 0.14s,
+        border-color 0.14s,
+        transform 0.12s;
+    }
+
+    .modal-close {
+      flex-shrink: 0;
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-md);
+      color: var(--text-2);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition:
+        background 0.14s,
+        color 0.14s,
+        transform 0.12s;
+    }
+
+    @media (hover: hover) {
+      .modal-copy:hover {
+        background: rgba(56, 189, 248, 0.16);
+        color: #bae6fd;
+        border-color: rgba(56, 189, 248, 0.45);
+        transform: translateY(-1px);
+      }
+
+      .modal-close:hover {
+        background: var(--danger-faint);
+        color: var(--danger);
+        border-color: var(--danger-border);
+        transform: rotate(90deg) scale(1.05);
+      }
+    }
+
+    .modal-copy.is-copied {
+      background: var(--success-faint);
+      color: var(--success);
+      border-color: var(--success-border);
+    }
+
+    .modal-divider {
+      height: 1px;
+      background: var(--border);
+      flex-shrink: 0;
+    }
+
+    .modal-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px;
+      overscroll-behavior: contain;
+    }
+
+    .modal-body p {
+      font-size: 14.5px;
+      line-height: 1.75;
+      color: var(--text-2);
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .modal-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 24px;
+      border-top: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .modal-char-count {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-3);
+      letter-spacing: 0.04em;
+    }
+
+    /* ── Scrollbar (global) ──────────────────────────── */
+    @media (min-width: 480px) {
+      ::-webkit-scrollbar {
+        width: 10px;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: rgba(8, 13, 26, 0.9);
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: linear-gradient(180deg,
+            rgba(56, 189, 248, 0.6),
+            rgba(14, 165, 233, 0.4));
+        border-radius: 100px;
+        border: 2px solid rgba(8, 13, 26, 0.9);
+      }
+
+      @media (hover: hover) {
+        ::-webkit-scrollbar-thumb:hover {
+          background: linear-gradient(180deg,
+              rgba(125, 211, 252, 0.8),
+              rgba(56, 189, 248, 0.6));
+        }
+      }
+
+      /* html {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(56, 189, 248, 0.5) rgba(8, 13, 26, 0.9);
+  } */
+
+      /* Modal scrollbar */
+      .modal-body::-webkit-scrollbar {
+        width: 10px;
+      }
+
+      .modal-body::-webkit-scrollbar-track {
+        background: transparent;
+      }
+
+      .modal-body::-webkit-scrollbar-thumb {
+        background: rgba(56, 189, 248, 0.25);
+        border-radius: 100px;
+      }
+
+      @media (hover: hover) {
+        .modal-body::-webkit-scrollbar-thumb:hover {
+          background: rgba(56, 189, 248, 0.45);
+        }
+      }
+    }
+
+    /* ── Responsive ──────────────────────────────────── */
+
+    /* Tablet */
+    #backToTop {
+      position: fixed;
+      right: 28px;
+      bottom: 28px;
+      width: 52px;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 50%;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      color: white;
+      cursor: pointer;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(15px);
+      transition: 0.25s ease;
+      z-index: 55;
+      font: inherit;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+
+    #backToTop.show {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    #backToTop:active {
+      transform: scale(0.95);
+    }
+
+    #backToTop svg {
+      transition: transform 0.25s ease;
+    }
+
+    @media (hover: hover) {
+      #backToTop:hover {
+        background: #1e293b;
+        transform: translateY(-4px);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+      }
+
+      #backToTop:hover svg {
+        transform: translateY(-2px);
+      }
+    }
+
+    @media (max-width: 900px) {
+      .masonry-wall {
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      }
+    }
+
+    /* Large mobile */
+    @media (max-width: 680px) {
+      :root {
+        --gap: 14px;
+      }
+
+      .main-content {
+        padding: 28px 16px 64px;
+      }
+
+      .header-inner {
+        padding: 0 16px;
+      }
+
+      .header-actions .btn-ghost span {
+        display: none;
+      }
+
+      .header-actions .btn-ghost {
+        padding: 8px 10px;
+      }
+
+      .header-actions .home-btn svg {
+        width: 14px;
+        height: 14px;
+      }
+
+      .masonry-wall {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .card-name {
+        font-size: 13.5px;
+      }
+
+      .card-avatar {
+        width: 30px;
+        height: 30px;
+        font-size: 12px;
+      }
+
+      .modal-glass {
+        max-height: 92dvh;
+        border-radius: 18px;
+      }
+
+      .modal-header {
+        padding: 18px 18px 14px;
+      }
+
+      .modal-body {
+        padding: 18px;
+      }
+
+      .modal-footer {
+        padding: 12px 18px;
+      }
+    }
+
+    /* Small mobile */
+    @media (max-width: 420px) {
+      .masonry-wall {
+        grid-template-columns: 1fr;
+      }
+
+      .brand-title {
+        font-size: 1.05rem;
+      }
+
+      .card-footer {
+        flex-direction: row;
+      }
+
+      .action-btn {
+        flex: 1;
+        justify-content: center;
+      }
+    }
+
+    /* ── Focus styles (accessibility) ───────────────── */
+    :focus-visible {
+      outline: 2px solid var(--cyan);
+      outline-offset: 2px;
+      border-radius: 4px;
+    }
+
+    .info-card[role="button"]:focus-visible {
+      outline: 2px solid #a78bfa;
+      outline-offset: 3px;
+    }
+
+    /* ── Confirmation Modal ── */
+    .confirm-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: calc(var(--z-modal) + 10);
+      background: rgba(4, 8, 20, 0.6);
+      backdrop-filter: blur(9px) saturate(1.4);
+      -webkit-backdrop-filter: blur(9px) saturate(1.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+
+    .confirm-overlay.is-active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .confirm-overlay[hidden] {
+      display: none;
+    }
+
+    .confirm-modal {
+      background: linear-gradient(135deg, rgba(22, 34, 58, 0.95), rgba(13, 22, 40, 0.98));
+      border: 1px solid var(--border-hi);
+      border-radius: 24px;
+      padding: 32px;
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5), 0 0 0 1px var(--border-md);
+      opacity: 0;
+      transform: scale(0.9) translateY(20px);
+      transition:
+        transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 0.25s ease;
+    }
+
+    .confirm-overlay.is-active .confirm-modal {
+      transform: scale(1) translateY(0);
+      opacity: 1;
+    }
+
+    .confirm-icon {
+      width: 64px;
+      height: 64px;
+      background: var(--danger-faint);
+      color: var(--danger);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      border: 1px solid var(--danger-border);
+      box-shadow: 0 8px 24px rgba(251, 113, 133, 0.15);
+    }
+
+    .confirm-title {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
+    }
+
+    .confirm-desc {
+      font-size: 14.5px;
+      color: var(--text-2);
+      line-height: 1.6;
+      margin-bottom: 32px;
+    }
+
+    .confirm-btns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .btn-confirm-delete {
+      background: var(--danger) !important;
+      color: #fff !important;
+      border: none !important;
+    }
+
+    .btn-confirm-delete:hover {
+      background: #ff5f78 !important;
+      box-shadow: 0 8px 24px rgba(251, 113, 133, 0.3) !important;
+    }
+
+    .confirm-btns button {
+      justify-content: center;
+    }
+
+    /* ── Toasts ── */
+    .toast-container {
+      position: fixed;
+      bottom: 32px;
+      right: 32px;
+      z-index: var(--z-toast);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .toast {
+      background: rgba(17, 24, 39, 0.9);
+      border: 1px solid var(--border-md);
+      border-radius: 16px;
+      padding: 14px 20px;
+      min-width: 300px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+      transform: translateX(120%);
+      opacity: 0;
+      transition:
+        transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 0.25s ease;
+      backdrop-filter: blur(16px);
+    }
+
+    .toast.is-active {
+      transform: translateX(0);
+      opacity: 1;
+    }
+
+    .toast-success {
+      border-left: 4px solid var(--success);
+    }
+
+    .toast-error {
+      border-left: 4px solid var(--danger);
+    }
+
+    .toast-icon {
+      flex-shrink: 0;
+      width: 24px;
+      height: 24px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .toast-success .toast-icon {
+      background: var(--success-faint);
+      color: var(--success);
+    }
+
+    .toast-error .toast-icon {
+      background: var(--danger-faint);
+      color: var(--danger);
+    }
+
+    .toast-msg {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    /* ── Loading Spinner ── */
+    .spinner {
+      animation: rotate 1s linear infinite;
+    }
+
+    .feed-loading {
+      display: flex;
+      justify-content: center;
+      padding: 32px 0 0;
+      color: var(--cyan);
+    }
+
+    .feed-loading[hidden],
+    .end-of-feed[hidden] {
+      display: none;
+    }
+
+    .scroll-sentinel {
+      height: 1px;
+      margin-top: 32px;
+    }
+
+    .end-of-feed {
+      padding: 40px 24px;
+      color: var(--text-3);
+      font-size: 13px;
+      text-align: center;
+    }
+
+    .end-of-feed::before {
+      content: "";
+      display: block;
+      width: 1px;
+      height: 40px;
+      margin: 0 auto 16px;
+      background: var(--border);
+    }
+
+    @keyframes rotate {
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 480px) {
+      .confirm-modal {
+        padding: 24px;
+      }
+
+      .toast {
+        min-width: auto;
+        width: calc(100vw - 32px);
+        right: 16px;
+        bottom: 16px;
+      }
+
+      .toast-container {
+        right: 16px;
+        bottom: 16px;
+        left: 16px;
+      }
+    }
+
+    div:has(> .modal-name) {
+      width: calc(100% - 45px);
+    }
+  </style>
+</head>
+
+<% if (typeof isMaster !== "undefined" && isMaster) { %>
+
+<body data-type="master">
+  <% } else { %>
+
+  <body>
+    <% } %>
+
+    <!-- ── Ambient background orbs ── -->
+    <div class="bg-orbs" aria-hidden="true">
+      <div class="orb orb-1"></div>
+      <div class="orb orb-2"></div>
+      <div class="orb orb-3"></div>
+    </div>
+
+    <!-- ── Header ── -->
+    <header class="site-header">
+      <div class="header-inner">
+        <div class="header-brand">
+          <span class="brand-pulse" aria-hidden="true"></span>
+          <span class="brand-title" onclick="window.location.reload()">Share<em>Info</em></span>
+          <% if (typeof data !== 'undefined' && data.length > 0) { %>
+          <!-- <span class="card-count-badge"><%= data.length %></span> -->
+          <% } %>
+        </div>
+
+        <nav class="header-actions">
+          <button class="btn-ghost home-btn" onclick="window.location.href='/#public-notes'" aria-label="Explore">
+            <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="10" />
+              <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
+            </svg>
+            <span>Explore</span>
+          </button>
+          <button class="btn-ghost logout-btn" onclick="window.location.href='/logout'">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+              <polyline points="16 17 21 12 16 7" />
+              <line x1="21" y1="12" x2="9" y2="12" />
+            </svg>
+            <span>Logout</span>
+          </button>
+          <button class="btn-primary add-btn" onclick="window.location.href='add'">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="12" y1="5" x2="12" y2="19" />
+              <line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
+            <span>Add Data</span>
+          </button>
+        </nav>
+      </div>
+    </header>
+
+    <!-- ── Main content ── -->
+    <main class="main-content">
+      <form class="search-row" id="searchForm">
+        <div class="search-input-wrap">
+          <input id="searchInput" type="text" placeholder="Search your entries..." autocomplete="off" value="<%= typeof activeKeyword !== 'undefined' ? activeKeyword : '' %>" />
+          <button class="search-clear" id="clearSearch" <%= typeof activeKeyword !== 'undefined' && activeKeyword ? '' : 'hidden' %> type="button" aria-label="Clear search">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+        <div class="sort-wrap">
+          <button class="sort-btn" id="sortToggle" type="button" aria-label="Sort entries" aria-haspopup="menu" aria-expanded="false" title="Sort entries">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="m3 16 4 4 4-4" />
+              <path d="M7 20V4" />
+              <path d="m21 8-4-4-4 4" />
+              <path d="M17 4v16" />
+            </svg>
+          </button>
+          <div class="sort-menu" id="sortMenu" role="menu" hidden>
+            <button class="sort-option <%= (typeof activeSort === 'undefined' || activeSort === 'updated') ? 'is-active' : '' %>" type="button" role="menuitemradio" aria-checked="<%= (typeof activeSort === 'undefined' || activeSort === 'updated') ? 'true' : 'false' %>" data-sort="updated">
+              <span>Last updated</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M20 6 9 17l-5-5" />
+              </svg>
+            </button>
+            <button class="sort-option <%= activeSort === 'created' ? 'is-active' : '' %>" type="button" role="menuitemradio" aria-checked="<%= activeSort === 'created' ? 'true' : 'false' %>" data-sort="created">
+              <span>Recently added</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M20 6 9 17l-5-5" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </form>
+
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="/#public-notes" aria-label="Explore public notes">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="10" />
+            <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
+          </svg>
+          Explore
+        </a>
+        <span class="sep" aria-hidden="true">/</span>
+        <span class="current">Dashboard</span>
+      </nav>
+      <% if (typeof isMaster === "undefined" || !isMaster) { %>
+      <div class="filter-bar" aria-label="Filter entries by visibility">
+        <button class="filter-btn <%= (activeVisibility || 'all') === 'all' ? 'active' : '' %>" data-filter="all" type="button">All</button>
+        <button class="filter-btn <%= activeVisibility === 'public' ? 'active' : '' %>" data-filter="public" type="button">Public</button>
+        <button class="filter-btn <%= activeVisibility === 'private' ? 'active' : '' %>" data-filter="private" type="button">Private</button>
+      </div>
+      <% } %>
+
+      <!-- ── Empty state ── -->
+      <% if (typeof data === 'undefined' || data.length === 0) { %>
+      <div class="empty-state">
+        <div class="empty-glyph" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+            <polyline points="14 2 14 8 20 8" />
+            <line x1="12" y1="18" x2="12" y2="12" />
+            <line x1="9" y1="15" x2="15" y2="15" />
+          </svg>
+        </div>
+        <h2 class="empty-title">Your wall is empty</h2>
+        <p class="empty-desc">Start building your personal info wall. Add links, notes, and data you want to keep.</p>
+        <button class="btn-primary" onclick="window.location.href='add'">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
+          </svg>
+          Add your first entry
+        </button>
+      </div>
+      <% } %>
+      <!-- ── Masonry wall ── -->
+      <div class="masonry-wall" id="masonryWall">
+      <% if (typeof data !== 'undefined' && data.length > 0) { %>
+      <%
+      const escapeHTML = (value = '') => String(value).replace(/[&<>"']/g, (char) => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+      }[char]));
+
+      const trimUrlPunctuation = (value) => {
+        let url = value;
+        let trailing = '';
+
+        while (/[.,!?;:)\]]$/.test(url)) {
+          trailing = url.slice(-1) + trailing;
+          url = url.slice(0, -1);
+        }
+
+        return { url, trailing };
+      };
+
+      const isExternalUrl = (value) => {
+        const clean = value.replace(/^https?:\/\//i, '');
+        const host = clean.split(/[/?#]/)[0].replace(/^www\./i, '');
+
+        const tld = host.split('.').pop();
+
+        return /^[a-z0-9-]+(\.[a-z0-9-]+)+$/i.test(host) && /^[a-z]{2,}$/i.test(tld);
+      };
+
+      const shouldIgnoreUrl = (rawText, value) => {
+        const clean = value.replace(/^https?:\/\//i, '');
+
+        return (
+          /<[^>]+>/.test(rawText) ||
+          /^\s*(?:import|export)\b/m.test(rawText) ||
+          /\.(?:css|js|json|html|ejs)(?:[?#].*)?$/i.test(clean) ||
+          /^(?:\.{1,2}\/|[a-z]:\\|\\\\|\/(?!\/))/i.test(value) ||
+          /\\/.test(value) ||
+          !isExternalUrl(value)
+        );
+      };
+
+      const parseContent = (text = '') => {
+        const rawText = String(text);
+
+        if (/<[^>]+>/.test(rawText) || /^\s*(?:import|export)\b/m.test(rawText)) {
+          return escapeHTML(rawText);
+        }
+
+        const urlPattern = /(^|[\s(])((?:https?:\/\/)?(?:www\.)?[a-z0-9][a-z0-9-]*(?:\.[a-z0-9][a-z0-9-]*)+(?:\/[^\s<>"']*)?)/gi;
+        let parsed = '';
+        let lastIndex = 0;
+        let match;
+
+        while ((match = urlPattern.exec(rawText)) !== null) {
+          const [fullMatch, prefix, candidate] = match;
+          const { url, trailing } = trimUrlPunctuation(candidate);
+          const urlStart = match.index + prefix.length;
+
+          parsed += escapeHTML(rawText.slice(lastIndex, urlStart));
+
+          if (!url || shouldIgnoreUrl(rawText, url)) {
+            parsed += escapeHTML(candidate);
+            lastIndex = urlStart + candidate.length;
+            continue;
+          }
+
+          const href = /^https?:\/\//i.test(url) ? url : `https://${url}`;
+          parsed += `<a class="inline-link" href="${escapeHTML(href)}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">${escapeHTML(url)}</a>${escapeHTML(trailing)}`;
+          lastIndex = match.index + fullMatch.length;
+        }
+
+        return parsed + escapeHTML(rawText.slice(lastIndex));
+      };
+
+      const entryTotal = typeof totalCount !== 'undefined' ? totalCount : data.length;
+    %>
+
+        <% data.forEach((person, index) => {
+        const cardType = 'plain';
+        const safeInfo = (person.info || '').replace(/'/g, "\\'").replace(/\n/g, '\\n');
+        const safeName = (person.name || '').replace(/'/g, "\\'");
+        const safeEmail = (person.email || '').replace(/'/g, "\\'");
+        const safePassword = (person.password || '').replace(/'/g, "\\'");
+      %>
+
+        <!-- Card: <%= cardType %> -->
+        <article id="<%= person._id %>" class="info-card card-<%= cardType %> card-pending" data-index="<%= index %>" data-name="<%= safeName %>" data-info="<%= safeInfo %>" data-email="<%= safeEmail %>" data-password="<%= safePassword %>" data-id="<%= person._id %>" data-is-public="<%= person.isPublic === true ? 'true' : 'false' %>" style="--stagger: <%= index %>">
+
+          <!-- Card type indicator -->
+          <div class="card-type-strip" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+              <polyline points="14 2 14 8 20 8" />
+            </svg>
+            Data / <%= person.isPublic === true ? 'Public' : 'Private' %>
+          </div>
+
+          <!-- Card header -->
+          <header class="card-header">
+            <div class="card-avatar" title="<%= person.password %>" aria-hidden="true">
+              <%= person.name ? person.name.charAt(0).toUpperCase() : '?' %>
+            </div>
+            <div class="card-meta">
+              <h3 class="card-name" title="<%= person.password %>"><%= person.name %></h3>
+              <% if (person.email) { %>
+              <span class="card-email"><%= person.email %></span>
+              <% } %>
+            </div>
+            <div class="card-index-badge" aria-hidden="true">#<%= String(entryTotal - index).padStart(2, '0') %></div>
+            <button class="card-copy-icon" type="button" aria-label="Copy note content" onclick="event.stopPropagation(); copyCardContent(this)">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+              </svg>
+            </button>
+          </header>
+
+          <!-- Card body -->
+          <div class="card-body">
+            <p class="card-text card-text-snippet"><%- parseContent(person.info) %></p>
+            <button class="view-more-btn" type="button" hidden>
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+              </svg>
+              View full note
+            </button>
+          </div>
+
+          <!-- Card footer with actions -->
+          <footer class="card-footer">
+            <% if (typeof isMaster == "undefined" || !isMaster) { %>
+            <% if (person.isPublic === true) { %>
+            <button class="action-btn action-copy" onclick="event.stopPropagation(); copyPublicLink('<%= person._id %>')" title="Copy public link">
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+              </svg>
+              Share
+            </button>
+            <% } %>
+            <button class="action-btn action-edit" onclick="event.stopPropagation(); window.location.href='update/<%= person._id %>'" title="Edit entry">
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+              </svg>
+              Edit
+            </button>
+            <% } %>
+            <button class="action-btn action-delete" onclick="event.stopPropagation(); DeleteFun('<%= person._id %>', this)" title="Delete entry">
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 6 5 6 21 6" />
+                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                <path d="M10 11v6" />
+                <path d="M14 11v6" />
+                <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+              </svg>
+              Delete
+            </button>
+          </footer>
+
+        </article>
+
+        <% }) %>
+      <% } %>
+      </div>
+
+      <div class="feed-loading" id="load-spinner" role="status" aria-label="Loading more entries" hidden>
+        <svg class="spinner" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 12a9 9 0 1 1-6.22-8.56" />
+        </svg>
+      </div>
+
+      <div class="scroll-sentinel" id="scroll-sentinel" aria-hidden="true"></div>
+
+      <div class="end-of-feed" id="end-of-feed" role="status" aria-live="polite" <% if (typeof data === 'undefined' || data.length === 0 || (typeof hasMore !== 'undefined' && hasMore)) { %>hidden<% } %>>
+        You've seen everything
+      </div>
+
+    </main>
+
+    <!-- ── View Modal overlay ── -->
+    <div class="modal-overlay" id="modalOverlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle" hidden>
+      <div class="modal-glass">
+
+        <div class="modal-header">
+          <div class="modal-title-group">
+            <span class="modal-avatar" id="modalAvatar" aria-hidden="true"></span>
+            <div>
+              <h2 class="modal-name" id="modalTitle"></h2>
+              <span class="modal-email" id="modalEmail"></span>
+            </div>
+          </div>
+          <button class="modal-close" id="modalClose" aria-label="Close modal" onclick="closeModal()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+
+        <div class="modal-divider" aria-hidden="true"></div>
+
+        <div class="modal-body" id="modalBody">
+          <p id="modalContent"></p>
+        </div>
+
+        <div class="modal-footer">
+          <span class="modal-char-count" id="modalCharCount"></span>
+          <div class="modal-actions">
+            <button class="modal-copy" id="modalCopy" aria-label="Copy modal content" onclick="copyModalContent()">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+              </svg>
+              <span>Copy</span>
+            </button>
+            <button class="btn-ghost" onclick="closeModal()">Close</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── Delete Confirmation Modal ── -->
+    <div class="confirm-overlay" id="confirmOverlay" role="dialog" aria-modal="true" aria-labelledby="confirmTitle" hidden>
+      <div class="confirm-modal">
+        <div class="confirm-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+            <line x1="12" y1="9" x2="12" y2="13" />
+            <line x1="12" y1="17" x2="12.01" y2="17" />
+          </svg>
+        </div>
+        <h2 class="confirm-title" id="confirmTitle">Delete Item?</h2>
+        <p class="confirm-desc">This action is permanent and cannot be reversed. Are you sure you want to remove this entry?</p>
+        <div class="confirm-btns">
+          <button class="btn-ghost" onclick="closeConfirmModal()">Cancel</button>
+          <button class="btn-primary btn-confirm-delete" id="confirmDeleteBtn">
+            <span>Delete</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Toast Container ── -->
+    <div class="toast-container" id="toastContainer" aria-live="polite" aria-atomic="true"></div>
+    <button id="backToTop" aria-label="Back to top">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="m18 15-6-6-6 6" />
+      </svg>
+    </button>
+
+    <script>
+      const initialPagination = {
+        nextCursor: <%- JSON.stringify(typeof initialCursor !== "undefined" ? initialCursor : null) %>,
+        hasMore: <%= typeof hasMore !== "undefined" ? Boolean(hasMore) : false %>,
+        totalCount: <%= typeof totalCount !== "undefined" ? totalCount : (typeof data !== "undefined" ? data.length : 0) %>
+      };
+      let nextCursor = initialPagination.nextCursor;
+      let totalEntryCount = initialPagination.totalCount;
+      let isFetching = false;
+      let isAutoLoading = false;
+      let exhausted = !initialPagination.hasMore;
+      let observer;
+      const activeVisibility = '<%= activeVisibility || "all" %>';
+      let searchKeyword = <%- JSON.stringify(typeof activeKeyword !== "undefined" ? activeKeyword : "") %>;
+      let currentSort = '<%= typeof activeSort !== "undefined" ? activeSort : "updated" %>';
+
+      /* ── Search + Sort Functions ── */
+
+      function closeSortMenu() {
+        const menu = document.getElementById('sortMenu');
+        const toggle = document.getElementById('sortToggle');
+        if (menu) menu.hidden = true;
+        if (toggle) toggle.setAttribute('aria-expanded', 'false');
+      }
+
+      function openSortMenu() {
+        const menu = document.getElementById('sortMenu');
+        const toggle = document.getElementById('sortToggle');
+        if (menu) menu.hidden = false;
+        if (toggle) toggle.setAttribute('aria-expanded', 'true');
+      }
+
+      function setActiveSort(sort) {
+        currentSort = sort === 'created' ? 'created' : 'updated';
+        document.querySelectorAll('.sort-option').forEach((option) => {
+          const isActive = option.dataset.sort === currentSort;
+          option.classList.toggle('is-active', isActive);
+          option.setAttribute('aria-checked', String(isActive));
+        });
+      }
+
+      setActiveSort(currentSort);
+
+      function setClearSearchVisibility(value) {
+        const btn = document.getElementById('clearSearch');
+        if (btn) btn.hidden = !value.trim();
+      }
+
+      function setupObserver() {
+        const sentinel = document.getElementById('scroll-sentinel');
+        if (!exhausted && nextCursor && sentinel) {
+          if (observer) observer.disconnect();
+          observer = new IntersectionObserver(
+            ([entry]) => { if (entry.isIntersecting) loadMore(); },
+            { rootMargin: '0px 0px 200px 0px' }
+          );
+          observer.observe(sentinel);
+        }
+      }
+
+      async function runSearch(keyword) {
+        searchKeyword = keyword.trim();
+        try {
+          const params = new URLSearchParams({ limit: '20', sort: currentSort });
+          if (searchKeyword) params.set('keyword', searchKeyword);
+          if (activeVisibility !== 'all') params.set('visibility', activeVisibility);
+          const response = await fetch(`/api/entries?${params}`, { headers: { Accept: 'application/json' } });
+          if (response.status === 401) { window.location.href = '/login'; return; }
+          if (!response.ok) throw new Error('Search request failed');
+          const page = await response.json();
+          if (typeof page.totalCount === 'number') {
+            totalEntryCount = page.totalCount;
+          }
+          const wall = document.getElementById('masonryWall');
+          const emptyState = document.querySelector('.empty-state');
+          if (wall) {
+            wall.textContent = '';
+            wall.style.display = '';
+            if (page.items?.length) {
+              wall.append(renderCards(page.items));
+              refreshCardOverflowState(wall);
+              updateAllCardBadges();
+            }
+          }
+          if (emptyState) emptyState.style.display = 'none';
+          nextCursor = page.nextCursor || null;
+          exhausted = !page.hasMore || !nextCursor;
+          if (exhausted) finishFeed();
+          else { const eof = document.getElementById('end-of-feed'); if (eof) eof.hidden = true; }
+          setupObserver();
+          setClearSearchVisibility(searchKeyword);
+        } catch (err) {
+          console.error('Search failed:', err);
+          showToast('Search failed', 'error');
+        }
+      }
+
+      let searchTimer;
+
+      document.getElementById('searchForm')?.addEventListener('submit', (event) => { event.preventDefault(); });
+
+      document.getElementById('searchInput')?.addEventListener('input', (event) => {
+        setClearSearchVisibility(event.target.value);
+        clearTimeout(searchTimer);
+        searchTimer = setTimeout(() => { runSearch(event.target.value); }, 500);
+      });
+
+      document.getElementById('clearSearch')?.addEventListener('click', () => {
+        clearTimeout(searchTimer);
+        const input = document.getElementById('searchInput');
+        if (input) input.value = '';
+        setClearSearchVisibility('');
+        runSearch('');
+      });
+
+      document.getElementById('sortToggle')?.addEventListener('click', () => {
+        const menu = document.getElementById('sortMenu');
+        if (menu) {
+          if (menu.hidden) openSortMenu();
+          else closeSortMenu();
+        }
+      });
+
+      document.querySelectorAll('.sort-option').forEach((option) => {
+        option.addEventListener('click', () => {
+          const nextSort = option.dataset.sort || 'updated';
+          closeSortMenu();
+          if (nextSort === currentSort) return;
+          setActiveSort(nextSort);
+          clearTimeout(searchTimer);
+          const input = document.getElementById('searchInput');
+          runSearch(input ? input.value : '');
+        });
+      });
+
+      document.addEventListener('click', (event) => {
+        const menu = document.getElementById('sortMenu');
+        if (!menu || menu.hidden) return;
+        if (event.target.closest('.sort-wrap')) return;
+        closeSortMenu();
+      });
+
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+          const menu = document.getElementById('sortMenu');
+          if (menu && !menu.hidden) closeSortMenu();
+        }
+      });
+
+      /* ── Modern Deletion & Feedback Logic ── */
+      let type = document.body.dataset.type;
+      let deleteTarget = {
+        id: null,
+        btn: null
+      };
+      const confirmOverlay = document.getElementById('confirmOverlay');
+      const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+      const toastContainer = document.getElementById('toastContainer');
+      const backToTop = document.getElementById('backToTop');
+      if (backToTop) {
+        window.addEventListener('scroll', () => {
+          backToTop.classList.toggle('show', window.scrollY > window.innerHeight * 0.5);
+        });
+        backToTop.addEventListener('click', () => {
+          window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+          });
+        });
+      }
+      const overlayState = new WeakMap();
+      const scrollLocks = new Set();
+      let originalBodyOverflow = '';
+      let originalBodyPaddingRight = '';
+
+      function lockPageScroll(owner) {
+        if (scrollLocks.has(owner)) return;
+
+        if (scrollLocks.size === 0) {
+          originalBodyOverflow = document.body.style.overflow;
+          originalBodyPaddingRight = document.body.style.paddingRight;
+
+          const scrollBarWidth = window.innerWidth - document.documentElement.clientWidth;
+          const bodyPaddingRight = parseFloat(getComputedStyle(document.body).paddingRight) || 0;
+          document.body.style.overflow = 'hidden';
+
+          if (scrollBarWidth > 0) {
+            document.body.style.paddingRight = `${bodyPaddingRight + scrollBarWidth}px`;
+          }
+        }
+
+        scrollLocks.add(owner);
+      }
+
+      function unlockPageScroll(owner) {
+        scrollLocks.delete(owner);
+        if (scrollLocks.size > 0) return;
+
+        document.body.style.overflow = originalBodyOverflow;
+        document.body.style.paddingRight = originalBodyPaddingRight;
+      }
+
+      function getOverlayState(element) {
+        if (!overlayState.has(element)) {
+          overlayState.set(element, {
+            closeTimer: null,
+            openFrame: null,
+            returnFocus: null,
+            activeClass: null,
+            onClosed: null,
+            restoreFocus: true
+          });
+        }
+
+        return overlayState.get(element);
+      }
+
+      const MODAL_HISTORY_STATE_KEY = 'shareInfoModal';
+      let modalHistoryCount = 0;
+
+      function getActiveOverlay() {
+        // Topmost overlay first — add future modals here in stacking order.
+        if (confirmOverlay && !confirmOverlay.hidden) return confirmOverlay;
+        if (overlay && !overlay.hidden) return overlay;
+        return null;
+      }
+
+      function pushModalHistory() {
+        history.pushState({
+          [MODAL_HISTORY_STATE_KEY]: modalHistoryCount
+        }, '');
+        modalHistoryCount++;
+      }
+
+      function openOverlay(element, activeClass, focusTarget, returnFocus = document.activeElement) {
+        const state = getOverlayState(element);
+        clearTimeout(state.closeTimer);
+        cancelAnimationFrame(state.openFrame);
+        state.closeTimer = null;
+        state.returnFocus = returnFocus;
+        state.activeClass = activeClass;
+        state.onClosed = null;
+        state.restoreFocus = true;
+
+        lockPageScroll(element);
+        element.hidden = false;
+        element.setAttribute('aria-hidden', 'false');
+        pushModalHistory();
+
+        state.openFrame = requestAnimationFrame(() => {
+          element.classList.add(activeClass);
+          focusTarget?.focus();
+          state.openFrame = null;
+        });
+      }
+
+      function closeOverlay(element, activeClass, onClosed, restoreFocus = true, {
+        fromPopstate = false
+      } = {}) {
+        if (element.hidden) return;
+
+        const state = getOverlayState(element);
+
+        if (!fromPopstate) {
+          if (activeClass) state.activeClass = activeClass;
+          if (onClosed) state.onClosed = onClosed;
+          state.restoreFocus = restoreFocus;
+
+          if (modalHistoryCount > 0) {
+            history.back();
+            return;
+          }
+        }
+
+        const activeClassName = state.activeClass || activeClass;
+        const closedCallback = state.onClosed || onClosed;
+        const shouldRestoreFocus = fromPopstate ? state.restoreFocus : restoreFocus;
+
+        clearTimeout(state.closeTimer);
+        cancelAnimationFrame(state.openFrame);
+        state.openFrame = null;
+        element.classList.remove(activeClassName);
+
+        state.closeTimer = setTimeout(() => {
+          element.hidden = true;
+          element.setAttribute('aria-hidden', 'true');
+          unlockPageScroll(element);
+          closedCallback?.();
+
+          if (shouldRestoreFocus && state.returnFocus?.isConnected) {
+            state.returnFocus.focus();
+          }
+
+          state.returnFocus = null;
+          state.onClosed = null;
+          state.closeTimer = null;
+        }, 300);
+      }
+
+      window.addEventListener('popstate', () => {
+        const activeElement = getActiveOverlay();
+        if (!activeElement || modalHistoryCount <= 0) return;
+
+        modalHistoryCount--;
+        closeOverlay(activeElement, null, null, true, {
+          fromPopstate: true
+        });
+      });
+
+      function resetConfirmButton() {
+        confirmDeleteBtn.disabled = false;
+        confirmDeleteBtn.innerHTML = '<span>Delete</span>';
+      }
+
+      function dismissToast(toast) {
+        if (!toast || toast.dataset.dismissing === 'true') return;
+        toast.dataset.dismissing = 'true';
+        toast.classList.remove('is-active');
+        setTimeout(() => toast.remove(), 400);
+      }
+
+      function showToast(message, type = 'success') {
+        const visibleToasts = [...toastContainer.querySelectorAll('.toast')];
+        while (visibleToasts.length >= 3) {
+          dismissToast(visibleToasts.shift());
+        }
+
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type}`;
+
+        const icon = type === 'success' ?
+          '<div class="toast-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div>' :
+          '<div class="toast-icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>';
+
+        toast.innerHTML = `${icon}<span class="toast-msg">${message}</span>`;
+        toastContainer.appendChild(toast);
+
+        // Entrance
+        requestAnimationFrame(() => {
+          toast.classList.add('is-active');
+        });
+
+        // Auto-remove
+        setTimeout(() => {
+          dismissToast(toast);
+        }, 3500);
+      }
+
+      function trimUrlPunctuation(value) {
+        let url = value;
+        let trailing = '';
+
+        while (/[.,!?;:)\]]$/.test(url)) {
+          trailing = url.slice(-1) + trailing;
+          url = url.slice(0, -1);
+        }
+
+        return {
+          url,
+          trailing
+        };
+      }
+
+      function isExternalUrl(value) {
+        const clean = value.replace(/^https?:\/\//i, '');
+        const host = clean.split(/[/?#]/)[0].replace(/^www\./i, '');
+        const tld = host.split('.').pop();
+
+        return /^[a-z0-9-]+(\.[a-z0-9-]+)+$/i.test(host) &&
+          /^[a-z]{2,}$/i.test(tld);
+      }
+
+      function shouldIgnoreUrl(rawText, value) {
+        const clean = value.replace(/^https?:\/\//i, '');
+
+        return (
+          /<[^>]+>/.test(rawText) ||
+          /^\s*(?:import|export)\b/m.test(rawText) ||
+          /\.(?:css|js|json|html|ejs)(?:[?#].*)?$/i.test(clean) ||
+          /^(?:\.{1,2}\/|[a-z]:\\|\\\\|\/(?!\/))/i.test(value) ||
+          /\\/.test(value) ||
+          !isExternalUrl(value)
+        );
+      }
+
+      function appendLinkedContent(container, text = '') {
+        const rawText = String(text ?? '');
+
+        if (/<[^>]+>/.test(rawText) || /^\s*(?:import|export)\b/m.test(rawText)) {
+          container.textContent = rawText;
+          return;
+        }
+
+        const urlPattern = /(^|[\s(])((?:https?:\/\/)?(?:www\.)?[a-z0-9][a-z0-9-]*(?:\.[a-z0-9][a-z0-9-]*)+(?:\/[^\s<>"']*)?)/gi;
+        let lastIndex = 0;
+        let match;
+
+        while ((match = urlPattern.exec(rawText)) !== null) {
+          const [fullMatch, prefix, candidate] = match;
+          const {
+            url,
+            trailing
+          } = trimUrlPunctuation(candidate);
+          const urlStart = match.index + prefix.length;
+
+          container.append(document.createTextNode(rawText.slice(lastIndex, urlStart)));
+
+          if (!url || shouldIgnoreUrl(rawText, url)) {
+            container.append(document.createTextNode(candidate));
+            lastIndex = urlStart + candidate.length;
+            continue;
+          }
+
+          const link = document.createElement('a');
+          link.className = 'inline-link';
+          link.href = /^https?:\/\//i.test(url) ? url : `https://${url}`;
+          link.target = '_blank';
+          link.rel = 'noopener noreferrer';
+          link.textContent = url;
+          link.addEventListener('click', (event) => event.stopPropagation());
+          container.append(link);
+          container.append(document.createTextNode(trailing));
+          lastIndex = match.index + fullMatch.length;
+        }
+
+        container.append(document.createTextNode(rawText.slice(lastIndex)));
+      }
+
+      function appendStaticIcon(element, markup) {
+        const template = document.createElement('template');
+        template.innerHTML = markup.trim();
+        element.append(template.content.firstElementChild);
+      }
+
+      function formatCardIndexBadge(number) {
+        return `#${String(number).padStart(2, '0')}`;
+      }
+
+      function updateAllCardBadges() {
+        const wall = document.getElementById('masonryWall');
+        if (!wall) return;
+
+        const cards = wall.querySelectorAll('.info-card');
+
+        cards.forEach((card, position) => {
+          const badge = card.querySelector('.card-index-badge');
+          if (badge) {
+            badge.textContent = formatCardIndexBadge(totalEntryCount - position);
+          }
+        });
+      }
+
+      function applyLongCardState(card, isLong) {
+        if (!card) return;
+
+        const name = card.dataset.name || '';
+        const info = card.dataset.info || '';
+        const email = card.dataset.email || '';
+        const password = card.dataset.password || '';
+        const isPublic = card.dataset.isPublic === 'true';
+        const typeStrip = card.querySelector('.card-type-strip');
+        const text = card.querySelector('.card-text');
+        const viewMoreButton = card.querySelector('.view-more-btn');
+
+        card.classList.toggle('card-long', isLong);
+        card.classList.toggle('card-plain', !isLong);
+
+        if (typeStrip) {
+          typeStrip.innerHTML = '';
+          appendStaticIcon(typeStrip, isLong ? `
+            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="17" y1="10" x2="3" y2="10"></line>
+              <line x1="21" y1="6" x2="3" y2="6"></line>
+              <line x1="21" y1="14" x2="3" y2="14"></line>
+              <line x1="17" y1="18" x2="3" y2="18"></line>
+            </svg>
+          ` : `
+            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+            </svg>
+          `);
+          typeStrip.append(document.createTextNode(`${isLong ? ' Note' : ' Data'} / ${isPublic ? 'Public' : 'Private'}`));
+        }
+
+        if (text) {
+          text.classList.toggle('card-text-snippet', isLong);
+          const ellipsis = text.querySelector('.ellipsis-fade');
+
+          if (isLong && !ellipsis) {
+            const ellipsisNode = document.createElement('span');
+            ellipsisNode.className = 'ellipsis-fade';
+            ellipsisNode.textContent = '\u2026';
+            text.append(ellipsisNode);
+          } else if (!isLong && ellipsis) {
+            ellipsis.remove();
+          }
+        }
+
+        if (viewMoreButton) {
+          viewMoreButton.hidden = !isLong;
+        }
+
+        if (isLong) {
+          card.setAttribute('role', 'button');
+          card.tabIndex = 0;
+          card.setAttribute('aria-label', `View full content for ${name}`);
+          card.onclick = () => openModal(name, info, email, password);
+          card.onkeydown = (event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+              event.preventDefault();
+              openModal(name, info, email, password);
+            }
+          };
+        } else {
+          card.removeAttribute('role');
+          card.removeAttribute('tabindex');
+          card.removeAttribute('aria-label');
+          card.onclick = null;
+          card.onkeydown = null;
+        }
+
+        card.classList.remove('card-pending');
+      }
+
+      async function copyPublicLink(id) {
+        const link = `${window.location.origin}/entry/${encodeURIComponent(id)}`;
+
+        try {
+          if (navigator.clipboard && window.isSecureContext) {
+            await navigator.clipboard.writeText(link);
+          } else {
+            const textarea = document.createElement('textarea');
+            textarea.value = link;
+            textarea.setAttribute('readonly', '');
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            textarea.remove();
+          }
+
+          showToast('Public link copied');
+        } catch (err) {
+          console.error('Failed to copy public link:', err);
+          showToast('Failed to copy link', 'error');
+        }
+      }
+
+      function resetCardCopyButton(button) {
+        if (!button) return;
+        button.classList.remove('is-copied');
+      }
+
+      async function copyCardContent(button) {
+        const card = button?.closest('.info-card');
+        const raw = card?.dataset.info || '';
+        if (!raw) return;
+        const text = raw.replace(/\\n/g, '\n');
+
+        try {
+          if (navigator.clipboard && window.isSecureContext) {
+            await navigator.clipboard.writeText(text);
+          } else {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.setAttribute('readonly', '');
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            textarea.remove();
+          }
+
+          button.classList.add('is-copied');
+          setTimeout(() => resetCardCopyButton(button), 1400);
+        } catch (err) {
+          console.error('Failed to copy note:', err);
+          showToast('Failed to copy note', 'error');
+        }
+      }
+
+      function cardTextOverflows(textElement) {
+        if (!textElement) return false;
+        return textElement.scrollHeight - textElement.clientHeight > 1;
+      }
+
+      function refreshCardOverflowState(scope = document) {
+        const cards = scope.querySelectorAll ? scope.querySelectorAll('.info-card') : [];
+        cards.forEach((card) => {
+          const text = card.querySelector('.card-text');
+          if (!text) return;
+
+          text.classList.add('card-text-snippet');
+          const isLong = cardTextOverflows(text);
+          applyLongCardState(card, isLong);
+        });
+      }
+
+      function buildCard(item, displayIndex, batchIndex) {
+        const info = String(item.info ?? '');
+        const name = String(item.name ?? '');
+        const email = String(item.email ?? '');
+        const password = String(item.password ?? '');
+        const id = String(item._id ?? '');
+        const isPublic = item.isPublic === true;
+        const card = document.createElement('article');
+        card.className = 'info-card card-plain card-pending';
+        card.dataset.index = String(displayIndex - 1);
+        card.dataset.name = name;
+        card.dataset.info = info;
+        card.dataset.email = email;
+        card.dataset.password = password;
+        card.dataset.id = id;
+        card.id = id;
+        card.dataset.isPublic = isPublic ? 'true' : 'false';
+        card.style.animationDelay = `${batchIndex * 60}ms`;
+
+        const typeStrip = document.createElement('div');
+        typeStrip.className = 'card-type-strip';
+        typeStrip.setAttribute('aria-hidden', 'true');
+        appendStaticIcon(typeStrip, `
+          <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+          </svg>
+        `);
+        typeStrip.append(document.createTextNode(` Data / ${isPublic ? 'Public' : 'Private'}`));
+        card.append(typeStrip);
+
+        const header = document.createElement('header');
+        header.className = 'card-header';
+
+        const avatar = document.createElement('div');
+        avatar.className = 'card-avatar';
+        avatar.title = password;
+        avatar.setAttribute('aria-hidden', 'true');
+        avatar.textContent = name ? name.charAt(0).toUpperCase() : '?';
+        header.append(avatar);
+
+        const meta = document.createElement('div');
+        meta.className = 'card-meta';
+
+        const title = document.createElement('h3');
+        title.className = 'card-name';
+        title.title = password;
+        title.textContent = name;
+        meta.append(title);
+
+        if (email) {
+          const emailElement = document.createElement('span');
+          emailElement.className = 'card-email';
+          emailElement.textContent = email;
+          meta.append(emailElement);
+        }
+        header.append(meta);
+
+        const badge = document.createElement('div');
+        badge.className = 'card-index-badge';
+        badge.setAttribute('aria-hidden', 'true');
+        badge.textContent = formatCardIndexBadge(displayIndex);
+        header.append(badge);
+
+        const copyIconButton = document.createElement('button');
+        copyIconButton.type = 'button';
+        copyIconButton.className = 'card-copy-icon';
+        copyIconButton.setAttribute('aria-label', 'Copy note content');
+        appendStaticIcon(copyIconButton, `
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          </svg>
+        `);
+        copyIconButton.addEventListener('click', (event) => {
+          event.stopPropagation();
+          copyCardContent(copyIconButton);
+        });
+        header.append(copyIconButton);
+        card.append(header);
+
+        const body = document.createElement('div');
+        body.className = 'card-body';
+        const content = document.createElement('p');
+        content.className = 'card-text card-text-snippet';
+        appendLinkedContent(content, info);
+        body.append(content);
+
+        const viewMoreButton = document.createElement('button');
+        viewMoreButton.type = 'button';
+        viewMoreButton.className = 'view-more-btn';
+        viewMoreButton.hidden = true;
+        appendStaticIcon(viewMoreButton, `
+          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+        `);
+        viewMoreButton.append(document.createTextNode(' View full note'));
+        viewMoreButton.addEventListener('click', (event) => {
+          event.stopPropagation();
+          openModal(name, info, email, password);
+        });
+        body.append(viewMoreButton);
+
+        card.append(body);
+
+        const footer = document.createElement('footer');
+        footer.className = 'card-footer';
+
+        if (type !== 'master') {
+          if (isPublic) {
+            const copyButton = document.createElement('button');
+            copyButton.type = 'button';
+            copyButton.className = 'action-btn action-copy';
+            copyButton.title = 'Copy public link';
+            appendStaticIcon(copyButton, `
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+            `);
+            copyButton.append(document.createTextNode(' Share'));
+            copyButton.addEventListener('click', (event) => {
+              event.stopPropagation();
+              copyPublicLink(id);
+            });
+            footer.append(copyButton);
+          }
+
+          const editButton = document.createElement('button');
+          editButton.type = 'button';
+          editButton.className = 'action-btn action-edit';
+          editButton.title = 'Edit entry';
+          appendStaticIcon(editButton, `
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+            </svg>
+          `);
+          editButton.append(document.createTextNode(' Edit'));
+          editButton.addEventListener('click', (event) => {
+            event.stopPropagation();
+            window.location.href = `/update/${encodeURIComponent(id)}`;
+          });
+          footer.append(editButton);
+        }
+
+        const deleteButton = document.createElement('button');
+        deleteButton.type = 'button';
+        deleteButton.className = 'action-btn action-delete';
+        deleteButton.title = 'Delete entry';
+        appendStaticIcon(deleteButton, `
+          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3 6 5 6 21 6"></polyline>
+            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path>
+            <path d="M10 11v6"></path>
+            <path d="M14 11v6"></path>
+            <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path>
+          </svg>
+        `);
+        deleteButton.append(document.createTextNode(' Delete'));
+        deleteButton.addEventListener('click', (event) => {
+          event.stopPropagation();
+          DeleteFun(id, deleteButton);
+        });
+        footer.append(deleteButton);
+        card.append(footer);
+
+        return card;
+      }
+
+      function renderCards(items) {
+        const wall = document.getElementById('masonryWall');
+        const fragment = document.createDocumentFragment();
+        if (!wall) return fragment;
+
+        const existingCount = wall.querySelectorAll('.info-card').length;
+        items.forEach((item, index) => {
+          fragment.append(buildCard(
+            item,
+            existingCount + index + 1,
+            index
+          ));
+        });
+
+        return fragment;
+      }
+
+      function finishFeed() {
+        exhausted = true;
+        observer?.disconnect();
+
+        const endOfFeed = document.getElementById('end-of-feed');
+        const wall = document.getElementById('masonryWall');
+        if (endOfFeed && wall?.querySelector('.info-card')) {
+          endOfFeed.hidden = false;
+        }
+      }
+
+      async function loadMore() {
+        if (isFetching || exhausted || !nextCursor) return;
+
+        isFetching = true;
+        let loadedSuccessfully = false;
+        const spinner = document.getElementById('load-spinner');
+        if (spinner) spinner.hidden = false;
+
+        try {
+          const params = new URLSearchParams({
+            cursor: nextCursor,
+            limit: '20',
+            sort: currentSort
+          });
+          if (searchKeyword) params.set('keyword', searchKeyword);
+          if (activeVisibility !== 'all') {
+            params.set('visibility', activeVisibility);
+          }
+          const response = await fetch(`/api/entries?${params}`, {
+            headers: {
+              Accept: 'application/json'
+            }
+          });
+
+          if (response.status === 401) {
+            window.location.href = '/login';
+            return;
+          }
+          if (!response.ok) {
+            throw new Error(`Request failed with status ${response.status}`);
+          }
+
+          const page = await response.json();
+          if (!Array.isArray(page.items)) {
+            throw new Error('Invalid entries response');
+          }
+
+          if (typeof page.totalCount === 'number') {
+            totalEntryCount = page.totalCount;
+          }
+
+          const wall = document.getElementById('masonryWall');
+          if (wall && page.items.length > 0) {
+            wall.append(renderCards(page.items));
+            refreshCardOverflowState(wall);
+            updateAllCardBadges();
+          }
+
+          nextCursor = page.nextCursor || null;
+          exhausted = !page.hasMore || !nextCursor;
+          loadedSuccessfully = true;
+
+          if (exhausted) {
+            finishFeed();
+          }
+        } catch (err) {
+          console.error('Failed to load more entries:', err);
+          showToast('Failed to load more entries', 'error');
+        } finally {
+          isFetching = false;
+          if (spinner) spinner.hidden = true;
+
+          if (loadedSuccessfully && !exhausted && !isAutoLoading) {
+            requestAnimationFrame(() => {
+              const sentinel = document.getElementById('scroll-sentinel');
+              if (
+                sentinel &&
+                sentinel.getBoundingClientRect().top <= window.innerHeight + 200
+              ) {
+                loadMore();
+              }
+            });
+          }
+        }
+      }
+
+      function DeleteFun(id, btn) {
+        openConfirmModal(id, btn);
+      }
+
+      function openConfirmModal(id, btn) {
+        deleteTarget = {
+          id,
+          btn
+        };
+        resetConfirmButton();
+        openOverlay(confirmOverlay, 'is-active', confirmDeleteBtn, btn);
+      }
+
+      function closeConfirmModal(restoreFocus = true) {
+        closeOverlay(confirmOverlay, 'is-active', () => {
+          deleteTarget = {
+            id: null,
+            btn: null
+          };
+          resetConfirmButton();
+        }, restoreFocus);
+      }
+
+      confirmDeleteBtn.addEventListener('click', async () => {
+        if (!deleteTarget.id || confirmDeleteBtn.disabled) return;
+
+        try {
+          confirmDeleteBtn.disabled = true;
+          confirmDeleteBtn.innerHTML = `
+            <svg class="spinner" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 12a9 9 0 1 1-6.22-8.56"></path>
+            </svg>
+            <span>Deleting...</span>
+          `;
+
+          const deleteUrl = type === "master" ? `/user/${deleteTarget.id}` : `/${deleteTarget.id}`;
+          const response = await fetch(deleteUrl, {
+            method: "DELETE"
+          });
+
+          if (!response.ok) throw new Error('Network response was not ok');
+
+          const card = deleteTarget.btn.closest('.info-card');
+          const wall = document.getElementById('masonryWall');
+          const isLastCard = wall && wall.querySelectorAll('.info-card').length <= 1;
+          card.classList.add('is-removing');
+
+          closeConfirmModal(false);
+          showToast('Entry removed successfully');
+
+          setTimeout(() => {
+            card.remove();
+            if (isLastCard) {
+              window.location.reload();
+            } else {
+              totalEntryCount = Math.max(0, totalEntryCount - 1);
+              updateAllCardBadges();
+            }
+          }, 600);
+
+        } catch (err) {
+          console.error(err);
+          showToast('Failed to delete entry', 'error');
+          closeConfirmModal();
+        }
+      });
+
+      /* ── View Modal logic ── */
+      const overlay = document.getElementById('modalOverlay');
+      const mTitle = document.getElementById('modalTitle');
+      const mEmail = document.getElementById('modalEmail');
+      const mAvatar = document.getElementById('modalAvatar');
+      const mContent = document.getElementById('modalContent');
+      const mCount = document.getElementById('modalCharCount');
+      const mCopy = document.getElementById('modalCopy');
+
+      function openModal(name, info, email, password) {
+        mTitle.textContent = name || '';
+        mEmail.textContent = email || '';
+        mAvatar.textContent = name ? name.charAt(0).toUpperCase() : '?';
+        mContent.textContent = '';
+        appendLinkedContent(mContent, (info || '').replace(/\\n/g, '\n'));
+        mCount.textContent = `${(info || '').length} characters`;
+        resetCopyButton();
+
+        openOverlay(overlay, 'is-open', document.getElementById('modalClose'));
+      }
+
+      function closeModal() {
+        closeOverlay(overlay, 'is-open');
+      }
+
+      function resetCopyButton() {
+        if (!mCopy) return;
+        const copyLabel = mCopy.querySelector('span');
+        mCopy.classList.remove('is-copied');
+        if (copyLabel) copyLabel.textContent = 'Copy';
+      }
+
+      async function copyModalContent() {
+        const text = mContent.textContent || '';
+        if (!text) return;
+
+        try {
+          if (navigator.clipboard && window.isSecureContext) {
+            await navigator.clipboard.writeText(text);
+          } else {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.setAttribute('readonly', '');
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            textarea.remove();
+          }
+
+          const copyLabel = mCopy.querySelector('span');
+          mCopy.classList.add('is-copied');
+          if (copyLabel) copyLabel.textContent = 'Copied';
+          setTimeout(resetCopyButton, 1400);
+        } catch (err) {
+          console.error(err);
+        }
+      }
+
+      /* Global Overlay Listeners */
+      [overlay, confirmOverlay].forEach(ov => {
+        ov.addEventListener('click', (e) => {
+          if (e.target === ov) {
+            if (ov.id === 'modalOverlay') closeModal();
+            else closeConfirmModal();
+          }
+        });
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          const activeElement = getActiveOverlay();
+          if (!activeElement) return;
+
+          if (activeElement === confirmOverlay) {
+            closeConfirmModal();
+          } else if (activeElement === overlay) {
+            closeModal();
+          }
+        }
+      });
+
+      /* ── Stagger card entrance ── */
+      const cards = document.querySelectorAll('.info-card');
+      cards.forEach((card, i) => {
+        card.style.animationDelay = `${i * 60}ms`;
+      });
+
+      requestAnimationFrame(() => {
+        refreshCardOverflowState();
+      });
+
+      let overflowRefreshFrame = null;
+      window.addEventListener('resize', () => {
+        if (overflowRefreshFrame) {
+          cancelAnimationFrame(overflowRefreshFrame);
+        }
+
+        overflowRefreshFrame = requestAnimationFrame(() => {
+          refreshCardOverflowState();
+          overflowRefreshFrame = null;
+        });
+      });
+
+      document.querySelectorAll('.filter-btn').forEach((button) => {
+        button.addEventListener('click', () => {
+          const filter = button.dataset.filter || 'all';
+          const url = new URL('/dashboard', window.location.origin);
+          if (filter !== 'all') {
+            url.searchParams.set('visibility', filter);
+          }
+          window.location.href = url.toString();
+        });
+      });
+
+      setupObserver();
+
+      function scrollElementToCenter(hash) {
+        const id = String(hash || '').replace(/^#/, '');
+        if (!id) return false;
+
+        const target = document.getElementById(id);
+        if (!target) return false;
+
+        target.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center',
+        });
+
+        return true;
+      }
+
+      let hashScrollInterval = null;
+      let activeHashLoadId = null;
+
+      function startHashPolling(hash) {
+        if (hashScrollInterval) return;
+
+        let attempts = 0;
+        const maxAttempts = 50;
+        hashScrollInterval = setInterval(() => {
+          attempts += 1;
+          if (scrollElementToCenter(hash) || attempts >= maxAttempts) {
+            clearInterval(hashScrollInterval);
+            hashScrollInterval = null;
+          }
+        }, 200);
+      }
+
+      async function autoLoadUntilHashFound(id) {
+        activeHashLoadId = id;
+        isAutoLoading = true;
+
+        try {
+          while (!document.getElementById(id)) {
+            if (activeHashLoadId !== id || exhausted || !nextCursor) break;
+
+            if (isFetching) {
+              await new Promise((resolve) => setTimeout(resolve, 300));
+              continue;
+            }
+
+            await loadMore();
+          }
+
+          if (activeHashLoadId !== id) return;
+
+          activeHashLoadId = null;
+          if (hashScrollInterval) {
+            clearInterval(hashScrollInterval);
+            hashScrollInterval = null;
+          }
+          scrollElementToCenter(`#${id}`);
+        } finally {
+          if (activeHashLoadId === id) {
+            activeHashLoadId = null;
+          }
+          isAutoLoading = false;
+        }
+      }
+
+      function scrollToHashedCard() {
+        if (!window.location.hash) return;
+        const hash = window.location.hash;
+        const id = hash.replace(/^#/, '');
+        if (!id) return;
+
+        if (scrollElementToCenter(hash)) {
+          activeHashLoadId = null;
+          if (hashScrollInterval) {
+            clearInterval(hashScrollInterval);
+            hashScrollInterval = null;
+          }
+          return;
+        }
+
+        if (activeHashLoadId === id) return;
+
+        startHashPolling(hash);
+        autoLoadUntilHashFound(id);
+      }
+
+      window.addEventListener('load', scrollToHashedCard);
+
+      window.addEventListener('hashchange', () => {
+        activeHashLoadId = null;
+        if (hashScrollInterval) {
+          clearInterval(hashScrollInterval);
+          hashScrollInterval = null;
+        }
+        scrollToHashedCard();
+      });
+    </script>
+
+  </body>
+
+</html>
