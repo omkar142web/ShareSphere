@@ -1,0 +1,33 @@
+<%
+  // Pass `active` ('home' | 'login' | 'register' | 'dashboard' | 'post-ride')
+  // and `user` (the logged-in user, if any) when rendering this partial.
+  var navActive = typeof active !== 'undefined' ? active : '';
+  var navUser = typeof user !== 'undefined' ? user : null;
+%>
+<nav class="navbar">
+  <a href="/" class="logo">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M5 17a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2"/>
+      <path d="M9 17h6"/>
+      <circle cx="7" cy="17" r="2"/>
+      <circle cx="17" cy="17" r="2"/>
+    </svg>
+    ShareSphere
+  </a>
+
+  <div class="nav-links">
+    <% if (navUser) { %>
+      <% if (navActive !== 'dashboard') { %><a href="/dashboard">Dashboard</a><% } %>
+      <% if (navActive !== 'post-ride') { %><a href="/post-ride" class="btn btn-primary btn-sm">+ Post Ride</a><% } %>
+      <span class="eco-badge"><%= navUser.eco_score || 0 %> pts</span>
+      <a href="/logout">Logout</a>
+    <% } else if (navActive === 'login') { %>
+      <a href="/register">Sign up</a>
+    <% } else if (navActive === 'register') { %>
+      <a href="/login">Log in</a>
+    <% } else { %>
+      <a href="/login">Log in</a>
+      <a href="/register" class="btn btn-primary">Get Started</a>
+    <% } %>
+  </div>
+</nav>
